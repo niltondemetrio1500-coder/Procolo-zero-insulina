@@ -40,3 +40,15 @@ button { border: 0; cursor: pointer; }
 .intro-header { min-height: 58px; display: flex; align-items: center; justify-content: center; }
 .intro-header .brand-logo { width: 118px; height: auto; max-height: 52px; object-fit: contain; }
 @media (max-width: 360px) { .intro-header { min-height: 62px; } .intro-header .brand-logo { width: 105px; max-height: 48px; } }
+.legal-links { display: flex; justify-content: center; gap: 14px; margin-top: 10px; }
+.legal-links a { color: #9a8678; font-size: 8px; text-decoration: underline; }
+.legal-screen { min-height: 100dvh; padding: 12px 17px 28px; background: var(--cream); }
+.legal-header { height: 42px; display: grid; grid-template-columns: 32px 1fr 32px; align-items: center; }
+.legal-header .brand-logo { width: 92px; justify-self: center; }
+.legal-card { margin-top: 22px; padding: 24px 18px; background: #fff; border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); }
+.legal-card h1 { margin: 0 0 8px; font-family: 'Playfair Display', Georgia, serif; font-size: 28px; line-height: 1.08; }
+.legal-card h3 { margin: 22px 0 6px; font-size: 14px; color: var(--orange-deep); }
+.legal-card p { color: #665247; font-size: 12px; line-height: 1.55; }
+.legal-card .legal-kicker { margin: 0 0 8px; color: var(--orange); font-size: 9px; font-weight: 800; letter-spacing: 1.3px; }
+.legal-card .legal-updated { color: var(--muted); font-size: 10px; margin-top: 0; }
+.legal-return { text-align: center; text-decoration: none; margin-top: 18px; }

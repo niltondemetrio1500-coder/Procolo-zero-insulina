@@ -16,7 +16,7 @@ export const ASSETS = {
   claudia: '/assets/antes-depois-4-CXXOM7GR.jpg'
 };
 
-export const CHECKOUT_URL = 'https://checkout.payt.com.br/c1335faf2cc7c64c3f15e91af7812571';
+export const CHECKOUT_URL = 'https://checkout.payt.com.br/8073ee18d2b7cd397c2171d9196587b9';
 
 const single = (id, title, options, extra = {}) => ({ type: 'single', id, title, options, ...extra });
 const multi = (id, title, options, extra = {}) => ({ type: 'multi', id, title, options, ...extra });
@@ -33,16 +33,16 @@ export const FLOW = [
     ['papada', '😊', 'Papada'], ['bracos', '💪', 'Braços'], ['barriga', '🤰', 'Barriga'], ['cintura', '💝', 'Cintura'], ['gluteos', '🍑', 'Glúteos'], ['coxas', '🦵', 'Coxas'], ['todo', '✨', 'Corpo Todo']
   ], { image: ASSETS.bodyAreas, hint: 'Selecione uma ou mais opções' }),
   info('notAlone', '🤝 Você não está sozinha.', '<strong>87,4%</strong><br><span>das mulheres acima de 40 anos</span><br><br>relatam acúmulo de gordura na Papada mesmo sem comer muito.', { button: 'Entendi, quero continuar' }),
-  info('globo', 'O efeito do Ozempic por R$ 5 ⭐', '', { image: ASSETS.globo, button: 'Continuar' }),
+  info('globo', 'O efeito do método caro por R$ 5 ⭐', '', { image: ASSETS.globo, button: 'Continuar' }),
   { type: 'name', id: 'name', title: 'Como posso te chamar?' },
   single('weightImpact', 'O que mais te incomoda no seu peso hoje?', [
     ['autoestima', '💔', 'Minha autoestima', 'Me olho no espelho e não me reconheço mais'], ['saude', '🩺', 'Minha saúde', 'Sinto que minha saúde está em risco'], ['relacionamentos', '👥', 'Meus relacionamentos', 'Evito sair, tirar foto ou me encontrar com pessoas'], ['rotina', '📅', 'Minha rotina', 'Não tenho energia pra cuidar da família e de mim mesma']
   ], { personalized: true }),
   info('biology', '🧬 {name}, seu corpo aprendeu a resistir.', 'É biologia, não falta de força de vontade.<br><br>O <strong>Segredo da Insulina</strong> muda esse sinal por dentro.', { button: 'Entendi, continuar' }),
   multi('barriers', 'O que mais te impede de emagrecer hoje?', [
-    ['dinheiro', '💸', 'Já gastei dinheiro e não tive resultado'], ['ozempic', '💰', 'Não tenho condições de pagar o Ozempic'], ['constancia', '📉', 'Começo e não consigo manter'], ['fome', '🍫', 'Sinto fome e acabo cedendo'], ['tempo', '⏰', 'Não tenho tempo para dietas']
+    ['dinheiro', '💸', 'Já gastei dinheiro e não tive resultado'], ['tratamento-caro', '💰', 'Não tenho condições de pagar tratamentos caros'], ['constancia', '📉', 'Começo e não consigo manter'], ['fome', '🍫', 'Sinto fome e acabo cedendo'], ['tempo', '⏰', 'Não tenho tempo para dietas']
   ], { hint: 'Selecione todas que se aplicam' }),
-  info('comparison', '💉 O efeito do Ozempic por R$ 5', 'A caneta Ozempic custa <strong>R$ 1.000 por mês</strong> e para de funcionar quando a gente para de usar.<br><br>O Segredo da Insulina faz o mesmo por menos de <strong>R$5 no mercado.</strong><br><br><span>Sem ingrediente caro. Sem farmácia. Só o liquidificador.</span>', { button: 'Continuar' }),
+  info('comparison', '💉 O efeito do método caro por R$ 5', 'Alguns tratamentos caros custam <strong>mais de R$ 1.000 por mês</strong> e exigem uso contínuo.<br><br>O Segredo da Insulina faz o mesmo por menos de <strong>R$5 no mercado.</strong><br><br><span>Sem ingrediente caro. Sem farmácia. Só o liquidificador.</span>', { button: 'Continuar' }),
   multi('goals', 'O que você quer conquistar?', [
     ['saude', '❤️', 'Melhorar minha saúde'], ['peso', '⚖️', 'Perder peso de verdade'], ['desinchar', '💧', 'Desinchar logo na primeira semana'], ['energia', '⚡', 'Ter mais energia no dia a dia'], ['autoestima', '🌸', 'Me sentir bem comigo mesma']
   ], { hint: 'Selecione todas que se aplicam' }),
