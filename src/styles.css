@@ -52,3 +52,6 @@ button { border: 0; cursor: pointer; }
 .legal-card .legal-kicker { margin: 0 0 8px; color: var(--orange); font-size: 9px; font-weight: 800; letter-spacing: 1.3px; }
 .legal-card .legal-updated { color: var(--muted); font-size: 10px; margin-top: 0; }
 .legal-return { text-align: center; text-decoration: none; margin-top: 18px; }
+.business-footer { display: flex; flex-direction: column; gap: 3px; margin: 22px auto 4px; padding: 10px 12px 0; color: #9a8678; text-align: center; font-size: 8px; line-height: 1.35; }
+.business-footer strong { font-size: 8px; font-weight: 700; }
+.business-footer span { font-size: 8px; }
