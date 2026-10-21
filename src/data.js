@@ -1,13 +1,13 @@
 export const ASSETS = {
   logo: '/assets/logo-ozempic-CLWt-YVF.png',
-  doctor: '/assets/doutora-cover-Dn4dhyTr.png',
+  doctor: '/assets/doutora-cover-optimized.webp',
   bodyMedium: '/assets/body-medio-DStQ-FtD.webp',
   bodyAbove: '/assets/body-acima-B6GAhLJh.webp',
   bodyOverweight: '/assets/body-sobrepeso-Xf73tryt.webp',
   bodyPlus: '/assets/body-plussize-C2UrcrEA.webp',
   bodyAreas: '/assets/body-areas-CF2TMRSN.webp',
   globo: '/assets/entrevista-globo-Cr7zZD5Q.webp',
-  beforeIcon: '/assets/icon-antes-TUawfA0v.png',
+  beforeIcon: '/assets/icon-antes-optimized.webp',
   commitment: '/assets/commitment-before-after-DYP9iNat.png',
   testimonial: '/assets/depoimento-antes-depois-CsLdWDkt.jpg',
   maria: '/assets/antes-depois-maria-Bjz-z-hL.jpg',
@@ -48,6 +48,18 @@ export const FLOW = [
   ], { hint: 'Selecione todas que se aplicam' }),
   single('bloat', 'Você tem inchaço, barriga dura ou digestão lenta com frequência?', [
     ['frequente', '😣', 'Sim, quase todo dia me sinto inchada'], ['noite', '😐', 'Às vezes, especialmente à noite'], ['raro', '😊', 'Raramente']
+  ]),
+  single('eating', 'Como costuma ser sua fome durante o dia?', [
+    ['manhã', '🌅', 'Tenho mais fome pela manhã'], ['tarde', '☀️', 'A fome aumenta à tarde'], ['noite', '🌙', 'Tenho muita fome à noite'], ['irregular', '🍽️', 'Minha fome é bastante irregular']
+  ]),
+  single('activity', 'Como está sua movimentação no dia a dia?', [
+    ['ativa', '🏃‍♀️', 'Me movimento bastante'], ['moderada', '🚶‍♀️', 'Faço alguma atividade'], ['pouca', '🪑', 'Passo muito tempo sentada'], ['comecar', '🌱', 'Quero começar a me movimentar']
+  ]),
+  single('history', 'Você já tentou emagrecer antes?', [
+    ['sim', '🔁', 'Sim, várias vezes'], ['algumas', '📝', 'Algumas vezes'], ['nao', '✨', 'Ainda não tentei um método'], ['desisti', '💛', 'Tentei, mas acabei desistindo']
+  ]),
+  single('support', 'O que mais ajudaria você a manter uma rotina?', [
+    ['simples', '🥤', 'Receitas simples e rápidas'], ['acompanhamento', '🤝', 'Acompanhamento passo a passo'], ['motivacao', '🔥', 'Mais motivação e constância'], ['organização', '📅', 'Uma rotina já organizada']
   ]),
   info('natural', '{name}, veja como o Segredo da Insulina age! 🎉', '<div class="how-it-works"><div><b>✓</b> Use ingredientes naturais</div><div><b>✓</b> 1 a 2 vezes ao dia</div><div><b>✓</b> Receita 100% Natural</div></div><div class="journey"><img src="' + ASSETS.beforeIcon + '" alt="Antes"/><div><b>1 · Antes</b><span>Metabolismo travado, fome constante</span></div><div><b>2 · Segredo da Insulina</b><span>Mistura natural que ativa o sinal de saciedade</span></div><div><b>3 · 🔥 Metabolismo reativado</b><span>Corpo para de segurar gordura</span></div><div><b>4 · ✨ Corpo responde</b><span>Resultado visível na 1ª semana</span></div></div>', { button: 'Entendi! Continuar 🚀' }),
   { type: 'number', id: 'weight', title: 'Qual é seu peso atual?', unit: 'kg', value: 75, min: 45, max: 150 },
