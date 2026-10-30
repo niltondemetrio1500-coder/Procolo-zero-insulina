@@ -1,13 +1,13 @@
 export const ASSETS = {
   logo: '/assets/logo-ozempic-CLWt-YVF.png',
-  doctor: '/assets/doutora-cover-optimized.webp',
+  doctor: '/assets/doutora-cover-Dn4dhyTr.png',
   bodyMedium: '/assets/body-medio-DStQ-FtD.webp',
   bodyAbove: '/assets/body-acima-B6GAhLJh.webp',
   bodyOverweight: '/assets/body-sobrepeso-Xf73tryt.webp',
   bodyPlus: '/assets/body-plussize-C2UrcrEA.webp',
   bodyAreas: '/assets/body-areas-CF2TMRSN.webp',
   globo: '/assets/entrevista-globo-Cr7zZD5Q.webp',
-  beforeIcon: '/assets/icon-antes-optimized.webp',
+  beforeIcon: '/assets/icon-antes-TUawfA0v.png',
   commitment: '/assets/commitment-before-after-DYP9iNat.png',
   testimonial: '/assets/depoimento-antes-depois-CsLdWDkt.jpg',
   maria: '/assets/antes-depois-maria-Bjz-z-hL.jpg',
@@ -33,33 +33,24 @@ export const FLOW = [
     ['papada', '😊', 'Papada'], ['bracos', '💪', 'Braços'], ['barriga', '🤰', 'Barriga'], ['cintura', '💝', 'Cintura'], ['gluteos', '🍑', 'Glúteos'], ['coxas', '🦵', 'Coxas'], ['todo', '✨', 'Corpo Todo']
   ], { image: ASSETS.bodyAreas, hint: 'Selecione uma ou mais opções' }),
   info('notAlone', '🤝 Você não está sozinha.', '<strong>87,4%</strong><br><span>das mulheres acima de 40 anos</span><br><br>relatam acúmulo de gordura na Papada mesmo sem comer muito.', { button: 'Entendi, quero continuar' }),
-  info('globo', 'O efeito do método caro por R$ 5 ⭐', '', { image: ASSETS.globo, button: 'Continuar' }),
+  info('globo', 'O efeito do Ozempic por R$ 5 ⭐', '', { image: ASSETS.globo, button: 'Continuar' }),
   { type: 'name', id: 'name', title: 'Como posso te chamar?' },
   single('weightImpact', 'O que mais te incomoda no seu peso hoje?', [
     ['autoestima', '💔', 'Minha autoestima', 'Me olho no espelho e não me reconheço mais'], ['saude', '🩺', 'Minha saúde', 'Sinto que minha saúde está em risco'], ['relacionamentos', '👥', 'Meus relacionamentos', 'Evito sair, tirar foto ou me encontrar com pessoas'], ['rotina', '📅', 'Minha rotina', 'Não tenho energia pra cuidar da família e de mim mesma']
   ], { personalized: true }),
+  single('appearance', 'Você já tentou emagrecer antes?', [
+    ['varias-vezes', '😞', 'Sim, várias vezes. Perco e logo ganho de volta'], ['nao-mantem', '😶', 'Sim, mas nunca consigo manter'], ['primeira-vez', '✨', 'Estou tentando pela primeira vez de verdade'], ['tudo', '😩', 'Já tentei de tudo e nada funcionou']
+  ]),
   info('biology', '🧬 {name}, seu corpo aprendeu a resistir.', 'É biologia, não falta de força de vontade.<br><br>O <strong>Segredo da Insulina</strong> muda esse sinal por dentro.', { button: 'Entendi, continuar' }),
   multi('barriers', 'O que mais te impede de emagrecer hoje?', [
-    ['dinheiro', '💸', 'Já gastei dinheiro e não tive resultado'], ['tratamento-caro', '💰', 'Não tenho condições de pagar tratamentos caros'], ['constancia', '📉', 'Começo e não consigo manter'], ['fome', '🍫', 'Sinto fome e acabo cedendo'], ['tempo', '⏰', 'Não tenho tempo para dietas']
+    ['dinheiro', '💸', 'Já gastei dinheiro e não tive resultado'], ['ozempic', '💰', 'Não tenho condições de pagar o Ozempic'], ['constancia', '📉', 'Começo e não consigo manter'], ['fome', '🍫', 'Sinto fome e acabo cedendo'], ['tempo', '⏰', 'Não tenho tempo para dietas']
   ], { hint: 'Selecione todas que se aplicam' }),
-  info('comparison', '💉 O efeito do método caro por R$ 5', 'Alguns tratamentos caros custam <strong>mais de R$ 1.000 por mês</strong> e exigem uso contínuo.<br><br>O Segredo da Insulina faz o mesmo por menos de <strong>R$5 no mercado.</strong><br><br><span>Sem ingrediente caro. Sem farmácia. Só o liquidificador.</span>', { button: 'Continuar' }),
+  info('comparison', '💉 O efeito do Ozempic por R$ 5', 'A caneta Ozempic custa <strong>R$ 1.000 por mês</strong> e para de funcionar quando a gente para de usar.<br><br>O Segredo da Insulina faz o mesmo por menos de <strong>R$5 no mercado.</strong><br><br><span>Sem ingrediente caro. Sem farmácia. Só o liquidificador.</span>', { button: 'Continuar' }),
   multi('goals', 'O que você quer conquistar?', [
     ['saude', '❤️', 'Melhorar minha saúde'], ['peso', '⚖️', 'Perder peso de verdade'], ['desinchar', '💧', 'Desinchar logo na primeira semana'], ['energia', '⚡', 'Ter mais energia no dia a dia'], ['autoestima', '🌸', 'Me sentir bem comigo mesma']
   ], { hint: 'Selecione todas que se aplicam' }),
   single('bloat', 'Você tem inchaço, barriga dura ou digestão lenta com frequência?', [
     ['frequente', '😣', 'Sim, quase todo dia me sinto inchada'], ['noite', '😐', 'Às vezes, especialmente à noite'], ['raro', '😊', 'Raramente']
-  ]),
-  single('eating', 'Como costuma ser sua fome durante o dia?', [
-    ['manhã', '🌅', 'Tenho mais fome pela manhã'], ['tarde', '☀️', 'A fome aumenta à tarde'], ['noite', '🌙', 'Tenho muita fome à noite'], ['irregular', '🍽️', 'Minha fome é bastante irregular']
-  ]),
-  single('activity', 'Como está sua movimentação no dia a dia?', [
-    ['ativa', '🏃‍♀️', 'Me movimento bastante'], ['moderada', '🚶‍♀️', 'Faço alguma atividade'], ['pouca', '🪑', 'Passo muito tempo sentada'], ['comecar', '🌱', 'Quero começar a me movimentar']
-  ]),
-  single('history', 'Você já tentou emagrecer antes?', [
-    ['sim', '🔁', 'Sim, várias vezes'], ['algumas', '📝', 'Algumas vezes'], ['nao', '✨', 'Ainda não tentei um método'], ['desisti', '💛', 'Tentei, mas acabei desistindo']
-  ]),
-  single('support', 'O que mais ajudaria você a manter uma rotina?', [
-    ['simples', '🥤', 'Receitas simples e rápidas'], ['acompanhamento', '🤝', 'Acompanhamento passo a passo'], ['motivacao', '🔥', 'Mais motivação e constância'], ['organização', '📅', 'Uma rotina já organizada']
   ]),
   info('natural', '{name}, veja como o Segredo da Insulina age! 🎉', '<div class="how-it-works"><div><b>✓</b> Use ingredientes naturais</div><div><b>✓</b> 1 a 2 vezes ao dia</div><div><b>✓</b> Receita 100% Natural</div></div><div class="journey"><img src="' + ASSETS.beforeIcon + '" alt="Antes"/><div><b>1 · Antes</b><span>Metabolismo travado, fome constante</span></div><div><b>2 · Segredo da Insulina</b><span>Mistura natural que ativa o sinal de saciedade</span></div><div><b>3 · 🔥 Metabolismo reativado</b><span>Corpo para de segurar gordura</span></div><div><b>4 · ✨ Corpo responde</b><span>Resultado visível na 1ª semana</span></div></div>', { button: 'Entendi! Continuar 🚀' }),
   { type: 'number', id: 'weight', title: 'Qual é seu peso atual?', unit: 'kg', value: 75, min: 45, max: 150 },
