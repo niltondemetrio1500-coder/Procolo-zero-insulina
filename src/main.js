@@ -52,6 +52,7 @@ function bodyAreaScreen(step) {
   shell(`<section class="quiz-screen body-area-screen">${topbar()}<div class="body-area-card"><h2>Onde você mais sente que o seu <span class="gradient-text">corpo mudou</span>?</h2><p class="select-hint">Selecione uma ou mais opções</p><div class="body-area-layout"><img class="body-area-image" src="${ASSETS.bodyAreas}" alt="Áreas do corpo"/><div class="body-area-options">${options}</div></div><button class="btn-quiz multi-continue" data-action="continue" ${selected.length ? '' : 'disabled'}>Continuar</button></div></section>`, 'quiz-shell');
   app.querySelector('[data-action="back"]').onclick = goBack;
   app.querySelectorAll('[data-value]').forEach((button) => button.onclick = () => choose(step, button.dataset.value, button));
+  app.querySelector('[data-action="continue"]').onclick = nextStep;
   refreshMulti(step);
 }
 function refreshMulti(step) { const cont = app.querySelector('.multi-continue'); if (!cont) return; const values = state.selections[step.id] || []; cont.disabled = values.length === 0; app.querySelectorAll('[data-value]').forEach((button) => button.classList.toggle('selected', values.includes(button.dataset.value))); }
