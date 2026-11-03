@@ -11,6 +11,11 @@ function checkoutHref() {
   const url = new URL(CHECKOUT_URL);
   const incoming = new URLSearchParams(window.location.search);
   TRACKING_KEYS.forEach((key) => { const value = incoming.get(key); if (value) url.searchParams.set(key, value); });
+  const googleClick = incoming.has('gclid') || incoming.has('gbraid') || incoming.has('wbraid');
+  if (googleClick) {
+    if (!url.searchParams.has('utm_source')) url.searchParams.set('utm_source', 'google');
+    if (!url.searchParams.has('utm_medium')) url.searchParams.set('utm_medium', 'cpc');
+  }
   return url.toString();
 }
 function trackCheckoutClick() {
