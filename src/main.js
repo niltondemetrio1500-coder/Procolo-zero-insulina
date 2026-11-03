@@ -16,7 +16,7 @@ const forecast = () => Math.max(getDesired() - 2, Math.round(getWeight() - loss(
 
 function logo() { return `<img class="brand-logo" src="${ASSETS.logo}" alt="Segredo da Insulina" />`; }
 function shell(html, cls = '') { app.innerHTML = `<main class="page-shell ${cls}">${html}</main>`; window.scrollTo({ top: 0, behavior: 'instant' }); }
-function topbar() { const pct = Math.min(99, Math.round(((state.step + 1) / FLOW.length) * 100)); return `<div class="quiz-top"><button class="back-button" data-action="back" aria-label="Voltar">‹</button>${logo()}<span class="step-count">${state.step + 1}/${FLOW.length}</span></div><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>`; }
+function topbar() { const pct = Math.min(99, Math.round(((state.step + 1) / FLOW.length) * 100)); return `<div class="quiz-top"><button class="back-button" data-action="back" aria-label="Voltar">‹</button>${logo()}</div><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>`; }
 function interpolate(text) { return text.replaceAll('{name}', esc(name())).replaceAll('{weight}', getWeight()).replaceAll('{desiredWeight}', getDesired()).replaceAll('{loss}', loss()).replaceAll('{forecast}', forecast()).replaceAll('{forecastLoss}', getWeight() - forecast()); }
 function nextStep() { if (state.step < FLOW.length - 1) { state.step += 1; render(); } else { runs.analysis += 1; state.screen = 'analysis'; state.analysisIndex = 0; render(); runAnalysis(); } }
 function goBack() { runs.analysis += 1; runs.plan += 1; if (state.step === 0) { state.screen = 'intro'; render(); } else { state.step -= 1; state.screen = 'flow'; render(); } }
@@ -28,7 +28,7 @@ function intro() {
 
 function optionMarkup(item, selected, personalized = false) {
   const [value, emoji, label, description] = item;
-  return `<button class="option-card ${selected ? 'selected' : ''} ${personalized ? 'personalized-option' : ''}" data-value="${esc(value)}"><span class="option-emoji">${emoji}</span><span class="option-text"><b>${esc(label)}</b>${description ? `<small>${esc(description)}</small>` : ''}</span><span class="option-arrow">›</span></button>`;
+  return `<button class="option-card ${selected ? 'selected' : ''} ${personalized ? 'personalized-option' : ''}" data-value="${esc(value)}"><span class="option-emoji">${emoji}</span><span class="option-text"><b>${esc(label)}</b>${description ? `<small>${esc(description)}</small>` : ''}</span></button>`;
 }
 function flowScreen() {
   const step = current();
@@ -39,7 +39,7 @@ function flowScreen() {
   const selected = step.type === 'multi' ? (state.selections[step.id] || []) : state.answers[step.id];
   const title = interpolate(step.title);
   const options = step.body ? step.options.map(([v,,label,img]) => `<button class="option-card body-option ${selected === v ? 'selected' : ''}" data-value="${v}"><img src="${img}" alt="${label}"/><span>${label}</span></button>`).join('') : step.options.map((item) => optionMarkup(item, step.type === 'multi' ? selected.includes(item[0]) : selected === item[0], step.personalized)).join('');
-  shell(`<section class="quiz-screen">${topbar()}<div class="question-card ${step.body ? 'body-question' : ''} ${step.commitment ? 'commitment-question' : ''}">${step.commitment && step.image ? `<img class="commitment-image" src="${step.image}" alt="Antes e depois"/>` : ''}${step.image && !step.commitment ? `<img class="question-image" src="${step.image}" alt="Imagem ilustrativa"/>` : ''}<div class="question-eyebrow">${step.commitment ? '' : `PERGUNTA ${String(state.step + 1).padStart(2, '0')}`}</div><h2>${title}</h2>${step.subtitle ? `<p class="question-subtitle">${step.subtitle}</p>` : ''}${step.hint ? `<p class="select-hint">${step.hint}</p>` : ''}<div class="options-list ${step.body ? 'body-grid' : ''}">${options}</div>${step.type === 'multi' ? `<button class="btn-quiz multi-continue" data-action="continue" disabled>Continuar</button>` : ''}</div><p class="microcopy">Sua resposta é confidencial e usada apenas para personalizar seu resultado.</p></section>`, 'quiz-shell');
+  shell(`<section class="quiz-screen">${topbar()}<div class="question-card ${step.body ? 'body-question' : ''} ${step.commitment ? 'commitment-question' : ''}">${step.commitment && step.image ? `<img class="commitment-image" src="${step.image}" alt="Antes e depois"/>` : ''}${step.image && !step.commitment ? `<img class="question-image" src="${step.image}" alt="Imagem ilustrativa"/>` : ''}<h2>${title}</h2>${step.subtitle ? `<p class="question-subtitle">${step.subtitle}</p>` : ''}${step.hint ? `<p class="select-hint">${step.hint}</p>` : ''}<div class="options-list ${step.body ? 'body-grid' : ''}">${options}</div>${step.type === 'multi' ? `<button class="btn-quiz multi-continue" data-action="continue" disabled>Continuar</button>` : ''}</div></section>`, 'quiz-shell');
   app.querySelector('[data-action="back"]').onclick = goBack;
   app.querySelectorAll('[data-value]').forEach((button) => button.onclick = () => choose(step, button.dataset.value, button));
   const cont = app.querySelector('[data-action="continue"]');
