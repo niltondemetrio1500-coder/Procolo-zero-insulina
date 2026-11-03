@@ -16,7 +16,7 @@ export const ASSETS = {
   claudia: '/assets/antes-depois-4-CXXOM7GR.jpg'
 };
 
-export const CHECKOUT_URL = 'https://checkout.payt.com.br/8073ee18d2b7cd397c2171d9196587b9';
+export const CHECKOUT_URL = 'https://app.mivvo.com.br/checkout/01a165f2-b9c0-7ba4-ae1a-a1958e03226e';
 
 const single = (id, title, options, extra = {}) => ({ type: 'single', id, title, options, ...extra });
 const multi = (id, title, options, extra = {}) => ({ type: 'multi', id, title, options, ...extra });
