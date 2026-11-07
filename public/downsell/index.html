@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Segredo da Insulina</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #ffffff; color: #111827; line-height: 1.5; -webkit-font-smoothing: antialiased;
+    }
+    body { min-height: 100vh; }
+    .container { width: 100%; max-width: 720px; margin: 0 auto; padding: 32px 20px 60px; text-align: center; }
+
+    .tag { font-size: 14px; font-weight: 800; letter-spacing: 2px; color: #dc2626; margin-bottom: 16px; }
+    h1 { font-size: 26px; font-weight: 800; color: #111827; line-height: 1.25; margin-bottom: 24px; padding: 0 8px; }
+    h1 strong { color: #16a34a; }
+    .instruction { font-size: 16px; color: #374151; margin-bottom: 28px; padding: 0 8px; }
+    .arrow-bounce { display: inline-block; animation: bounce 1.4s infinite; }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+
+    /* ----- Roleta ----- */
+    .wheel-wrap { position: relative; width: 340px; height: 340px; margin: 16px auto 28px; user-select: none; }
+    .wheel-wrap::before {
+      content: ''; position: absolute; inset: -14px; border-radius: 50%;
+      background: radial-gradient(circle at 50% 0%, #fde68a, #f59e0b 60%, #b45309);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.25), inset 0 4px 12px rgba(255,255,255,0.4);
+      z-index: 0;
+    }
+    .wheel-wrap::after { content: ''; position: absolute; inset: 0; border-radius: 50%; background: #1f2937; z-index: 1; }
+
+    .pointer {
+      position: absolute; top: -22px; left: 50%; transform: translateX(-50%);
+      width: 0; height: 0;
+      border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 38px solid #dc2626;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.35)); z-index: 5; transform-origin: 50% 0;
+    }
+    .pointer::after {
+      content: ''; position: absolute; top: -42px; left: -10px; width: 20px; height: 20px;
+      background: #dc2626; border-radius: 50%; box-shadow: 0 0 0 4px #fff, 0 0 0 6px #dc2626;
+    }
+    @keyframes pointer-kick {
+      0%   { transform: translateX(-50%) rotate(0); }
+      35%  { transform: translateX(-50%) rotate(14deg); }
+      100% { transform: translateX(-50%) rotate(0); }
+    }
+    .pointer.kick { animation: pointer-kick 110ms ease-out; }
+
+    .wheel {
+      position: absolute; inset: 8px; border-radius: 50%; z-index: 2; will-change: transform;
+      box-shadow: inset 0 0 0 6px #fff;
+    }
+    .wheel svg { display: block; width: 100%; height: 100%; }
+    .wheel.spinning { filter: drop-shadow(0 0 14px rgba(251,191,36,0.6)); }
+    .wheel.celebrating { animation: wheel-celebrate 1.2s ease-out 2; }
+    @keyframes wheel-celebrate {
+      0%, 100% { filter: drop-shadow(0 0 18px rgba(34,197,94,0)); }
+      50%      { filter: drop-shadow(0 0 30px rgba(34,197,94,0.95)); }
+    }
+
+    .wheel-hub {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 72px; height: 72px; border-radius: 50%;
+      background: linear-gradient(180deg, #fde68a, #f59e0b);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.3), inset 0 -3px 8px rgba(0,0,0,0.2); z-index: 4;
+    }
+    .wheel-hub::after {
+      content: ''; position: absolute; inset: 14px; border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fff, #fde68a);
+      box-shadow: inset 0 -2px 6px rgba(180,83,9,0.4);
+    }
+
+    .wheel-light {
+      position: absolute; top: 50%; left: 50%; width: 8px; height: 8px; margin-left: -4px; margin-top: -4px;
+      background: #fef3c7; border-radius: 50%; box-shadow: 0 0 6px #fbbf24, 0 0 12px #fbbf24;
+      z-index: 6; animation: light-blink 1.4s ease-in-out infinite;
+    }
+    @keyframes light-blink {
+      0%, 100% { opacity: 0.25; transform: var(--pos) scale(0.9); }
+      50%      { opacity: 1;    transform: var(--pos) scale(1.15); }
+    }
+    .wheel-wrap.spinning .wheel-light { animation-duration: 0.28s; }
+    .wheel-wrap.celebrating .wheel-light { animation-duration: 0.12s; }
+
+    .spin-btn {
+      display: inline-block; background: linear-gradient(180deg, #fbbf24, #f59e0b);
+      color: #111827; font-size: 18px; font-weight: 800; letter-spacing: 0.4px;
+      padding: 16px 38px; border-radius: 12px; border: none; cursor: pointer; font-family: inherit;
+      box-shadow: 0 8px 20px rgba(245,158,11,0.45);
+      transition: transform 200ms, box-shadow 200ms; animation: pulse-yellow 1.7s ease-in-out infinite;
+    }
+    .spin-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(245,158,11,0.55); }
+    .spin-btn:disabled { opacity: 0.6; cursor: not-allowed; animation: none; }
+    @keyframes pulse-yellow {
+      0%, 100% { box-shadow: 0 8px 20px rgba(245,158,11,0.40); }
+      50%      { box-shadow: 0 12px 28px rgba(245,158,11,0.70); }
+    }
+
+    /* ----- Resultado ----- */
+    .result {
+      margin-top: 40px; opacity: 0; transform: translateY(20px); pointer-events: none;
+      transition: opacity 700ms ease, transform 700ms ease;
+    }
+    .result.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .result-msg { font-size: 20px; font-weight: 700; color: #111827; line-height: 1.4; margin-bottom: 24px; }
+    .result-msg .discount { display: inline-block; color: #16a34a; font-weight: 900; font-size: 26px; }
+
+    .price-box {
+      background: linear-gradient(180deg, #f0fdf4, #dcfce7); border: 2px dashed #16a34a; border-radius: 14px;
+      padding: 18px 16px; margin: 0 auto 22px; max-width: 360px; box-shadow: 0 6px 18px rgba(22,163,74,0.15);
+    }
+    .price-from {
+      color: #6b7280; font-size: 16px; font-weight: 600;
+      text-decoration: line-through; text-decoration-thickness: 2px; text-decoration-color: #dc2626; margin-bottom: 4px;
+    }
+    .price-from .label { display: inline-block; color: #9ca3af; text-decoration: none; margin-right: 6px; font-weight: 500; }
+    .price-to { display: flex; align-items: baseline; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    .price-to .label { color: #4b5563; font-size: 16px; font-weight: 700; }
+    .price-to .value { color: #16a34a; font-size: 36px; font-weight: 900; letter-spacing: -0.5px; line-height: 1; }
+    .price-badge {
+      display: inline-block; margin-top: 10px; background: #16a34a; color: #fff;
+      font-size: 13px; font-weight: 800; letter-spacing: 1px; padding: 6px 14px; border-radius: 999px;
+      box-shadow: 0 4px 10px rgba(22,163,74,0.3);
+    }
+
+    .cta {
+      display: inline-block; background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
+      color: #fff; text-decoration: none; font-size: 22px; font-weight: 800; letter-spacing: 0.3px;
+      padding: 20px 36px; border-radius: 14px; box-shadow: 0 10px 24px rgba(22,163,74,0.45);
+      transition: transform 200ms ease, box-shadow 200ms ease; animation: pulse-green 1.7s ease-in-out infinite;
+    }
+    .cta:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(22,163,74,0.55); }
+    @keyframes pulse-green {
+      0%, 100% { transform: scale(1); box-shadow: 0 10px 24px rgba(22,163,74,0.40); }
+      50%      { transform: scale(1.03); box-shadow: 0 12px 30px rgba(22,163,74,0.65); }
+    }
+
+    .timer-line { margin-top: 22px; font-size: 15px; color: #4b5563; }
+    .timer-line .clock {
+      display: inline-block; font-family: "SF Mono", "Roboto Mono", Menlo, Consolas, monospace;
+      font-size: 28px; font-weight: 800; color: #dc2626; letter-spacing: 1.5px;
+      vertical-align: middle; margin-left: 8px; padding: 4px 12px; border-radius: 8px;
+      background: #fee2e2; border: 1px solid #fecaca; font-variant-numeric: tabular-nums;
+    }
+    .clock.expired { color: #6b7280; background: #f3f4f6; border-color: #e5e7eb; }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 22px; }
+      .instruction { font-size: 15px; }
+      .wheel-wrap { width: 290px; height: 290px; }
+      .pointer { border-left-width: 16px; border-right-width: 16px; border-top-width: 30px; }
+      .pointer::after { width: 16px; height: 16px; left: -8px; top: -34px; }
+      .wheel-hub { width: 58px; height: 58px; }
+      .wheel-hub::after { inset: 12px; }
+      .result-msg { font-size: 18px; }
+      .result-msg .discount { font-size: 22px; }
+      .cta { font-size: 18px; padding: 18px 28px; }
+      .timer-line { font-size: 14px; }
+      .timer-line .clock { font-size: 22px; }
+      .price-box { padding: 14px; max-width: 320px; }
+      .price-from { font-size: 14px; }
+      .price-to .value { font-size: 30px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <div class="tag">PARABÉNS!</div>
+
+    <h1>Você liberou um <strong>cupom de 30% de desconto</strong> na <strong>Dra. do Segredo</strong></h1>
+
+    <p class="instruction">
+      Gire a roleta abaixo para ativar o seu cupom
+      <span class="arrow-bounce">👇</span>
+    </p>
+
+    <div class="wheel-wrap" id="wheel-wrap">
+      <div class="pointer" id="pointer"></div>
+      <div class="wheel" id="wheel"></div>
+      <div class="wheel-hub"></div>
+    </div>
+
+    <button class="spin-btn" id="spin-btn" type="button">GIRAR ROLETA</button>
+
+    <section class="result" id="result" aria-live="polite">
+      <p class="result-msg">
+        Pronto! Seu cupom de <span class="discount" id="result-discount">30%</span> de desconto
+        na Dra. do Segredo está ativado
+      </p>
+
+      <div class="price-box">
+        <div class="price-from"><span class="label">De:</span><span id="price-from">R$ 67,00</span></div>
+        <div class="price-to">
+          <span class="label">Por:</span>
+          <span class="value" id="price-to">R$ 46,90</span>
+        </div>
+        <span class="price-badge" id="price-badge">VOCÊ ECONOMIZA 30%</span>
+      </div>
+
+      <a class="cta" id="cta" href="#">GARANTIR MEU DESCONTO AGORA MESMO!</a>
+
+      <p class="timer-line">Cupom de desconto válido por: <span class="clock" id="clock">10:00</span></p>
+    </section>
+  </main>
+
+  <script>
+    // ===================== CONFIGURAÇÃO =====================
+    var CONFIG = {
+      // Desconto do cupom (o texto do topo diz este valor antes de girar; a roleta para nele).
+      DISCOUNT_PCT: 30,
+      PRICE_FROM: 'R$ 67,00',
+      PRICE_TO: 'R$ 46,90',
+      // Link do botão de compra (downsell 1 clique da Payt).
+      CTA_URL: '#',
+      // Duração do cronômetro, em minutos.
+      TIMER_MINUTES: 10
+    };
+    // Fatias da roleta, no sentido horário a partir do topo.
+    var SLICES = [
+      { pct: 30, fill: '#22c55e', text: '#ffffff' },
+      { pct: 5,  fill: '#fde68a', text: '#7c2d12' },
+      { pct: 50, fill: '#a78bfa', text: '#ffffff' },
+      { pct: 10, fill: '#fbbf24', text: '#7c2d12' },
+      { pct: 40, fill: '#60a5fa', text: '#ffffff' },
+      { pct: 15, fill: '#fcd34d', text: '#7c2d12' },
+      { pct: 25, fill: '#f472b6', text: '#ffffff' },
+      { pct: 20, fill: '#fb923c', text: '#ffffff' }
+    ];
+    // ========================================================
+
+    (function () {
+      var SVG_NS = 'http://www.w3.org/2000/svg';
+      var n = SLICES.length, step = 360 / n;
+
+      function polar(angleDeg, r) {
+        var rad = (angleDeg - 90) * Math.PI / 180;
+        return [50 + r * Math.cos(rad), 50 + r * Math.sin(rad)];
+      }
+
+      // Desenha a roleta (fatia 0 centrada no topo).
+      var svg = document.createElementNS(SVG_NS, 'svg');
+      svg.setAttribute('viewBox', '0 0 100 100');
+      SLICES.forEach(function (s, i) {
+        var a0 = i * step - step / 2, a1 = a0 + step, mid = a0 + step / 2;
+        var p0 = polar(a0, 50), p1 = polar(a1, 50);
+        var path = document.createElementNS(SVG_NS, 'path');
+        path.setAttribute('d', 'M50,50 L' + p0[0] + ',' + p0[1] + ' A50,50 0 0,1 ' + p1[0] + ',' + p1[1] + ' Z');
+        path.setAttribute('fill', s.fill);
+        path.setAttribute('stroke', '#ffffff');
+        path.setAttribute('stroke-width', '0.6');
+        svg.appendChild(path);
+        var pos = polar(mid, 33);
+        var text = document.createElementNS(SVG_NS, 'text');
+        text.setAttribute('x', pos[0]); text.setAttribute('y', pos[1]);
+        text.setAttribute('fill', s.text);
+        text.setAttribute('font-size', '8'); text.setAttribute('font-weight', '900');
+        text.setAttribute('text-anchor', 'middle'); text.setAttribute('dominant-baseline', 'middle');
+        text.setAttribute('font-family', '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif');
+        text.setAttribute('transform', 'rotate(' + mid + ' ' + pos[0] + ' ' + pos[1] + ')');
+        text.textContent = s.pct + '%';
+        svg.appendChild(text);
+      });
+      var wheel = document.getElementById('wheel');
+      wheel.appendChild(svg);
+
+      // Luzinhas em volta do aro.
+      var wrap = document.getElementById('wheel-wrap');
+      function placeLights() {
+        wrap.querySelectorAll('.wheel-light').forEach(function (el) { el.remove(); });
+        var R = wrap.offsetWidth / 2 - 2, count = 18;
+        for (var i = 0; i < count; i++) {
+          var ang = (i / count) * 2 * Math.PI - Math.PI / 2;
+          var x = R * Math.cos(ang), y = R * Math.sin(ang);
+          var l = document.createElement('div');
+          l.className = 'wheel-light';
+          var t = 'translate(' + x.toFixed(2) + 'px, ' + y.toFixed(2) + 'px)';
+          l.style.setProperty('--pos', t);
+          l.style.transform = t;
+          l.style.animationDelay = (i * 0.08) + 's';
+          wrap.appendChild(l);
+        }
+      }
+      placeLights();
+      window.addEventListener('resize', placeLights);
+
+      // Textos e links a partir do CONFIG.
+      document.getElementById('price-from').textContent = CONFIG.PRICE_FROM;
+      document.getElementById('price-to').textContent = CONFIG.PRICE_TO;
+      document.getElementById('price-badge').textContent = 'VOCÊ ECONOMIZA ' + CONFIG.DISCOUNT_PCT + '%';
+      document.getElementById('result-discount').textContent = CONFIG.DISCOUNT_PCT + '%';
+      var cta = document.getElementById('cta');
+      cta.href = (function (url) {
+        if (!url || url === '#') return url;
+        try {
+          var target = new URL(url, window.location.href);
+          new URLSearchParams(window.location.search).forEach(function (v, k) {
+            if (!target.searchParams.has(k)) target.searchParams.set(k, v);
+          });
+          return target.toString();
+        } catch (e) { return url; }
+      })(CONFIG.CTA_URL);
+
+      function startTimer(total) {
+        var el = document.getElementById('clock'), id;
+        function tick() {
+          el.textContent = String(Math.floor(total / 60)).padStart(2, '0') + ':' + String(total % 60).padStart(2, '0');
+          if (total-- <= 0) { clearInterval(id); el.classList.add('expired'); }
+        }
+        tick(); id = setInterval(tick, 1000);
+      }
+
+      // Giro: a roleta para na fatia do cupom anunciado no topo (CONFIG.DISCOUNT_PCT).
+      var target = 0;
+      SLICES.forEach(function (s, i) { if (s.pct === CONFIG.DISCOUNT_PCT) target = i; });
+      var btn = document.getElementById('spin-btn');
+      var pointer = document.getElementById('pointer');
+      var spun = false;
+
+      btn.addEventListener('click', function () {
+        if (spun) return;
+        spun = true;
+        btn.disabled = true;
+        wrap.classList.add('spinning');
+        wheel.classList.add('spinning');
+
+        var jitter = (Math.random() - 0.5) * step * 0.6;
+        var finalDeg = 360 * 6 - target * step + jitter;
+        var duration = 5200, start = null, lastTick = 0;
+        function easeOut(t) { return 1 - Math.pow(1 - t, 4); }
+        function frame(ts) {
+          if (!start) start = ts;
+          var t = Math.min(1, (ts - start) / duration);
+          var deg = finalDeg * easeOut(t);
+          wheel.style.transform = 'rotate(' + deg + 'deg)';
+          var tickIdx = Math.floor((deg + step / 2) / step);
+          if (tickIdx !== lastTick) {
+            lastTick = tickIdx;
+            pointer.classList.remove('kick'); void pointer.offsetWidth; pointer.classList.add('kick');
+          }
+          if (t < 1) { requestAnimationFrame(frame); return; }
+          wrap.classList.remove('spinning'); wheel.classList.remove('spinning');
+          wrap.classList.add('celebrating'); wheel.classList.add('celebrating');
+          setTimeout(function () {
+            var result = document.getElementById('result');
+            result.classList.add('show');
+            startTimer(CONFIG.TIMER_MINUTES * 60);
+            result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 900);
+        }
+        requestAnimationFrame(frame);
+      });
+    })();
+  </script>
+</body>
+</html>
