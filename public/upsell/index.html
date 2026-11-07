@@ -171,7 +171,9 @@
         <span class="price-save" id="price-save">Você economiza R$ 130,00</span>
       </div>
 
-      <a class="cta" id="cta" href="#">QUERO ATIVAR AGORA <b id="cta-price">R$67,00</b></a>
+      <!-- Botão de compra com 1 clique da Payt (upsell R3NP9Z, produto DR Segredo R3YJBG). -->
+      <a class="cta" id="cta" href="#" payt_action="oneclick_buy" data-object="R3NP9Z-R3YJBG">QUERO ATIVAR AGORA <b id="cta-price">R$67,00</b></a>
+      <select payt_element="installment" data-object="R3NP9Z-R3YJBG" hidden></select>
       <span class="cta-note">Oferta única por tempo limitado</span>
 
       <div>
@@ -196,7 +198,7 @@
       VTURB_PLAYER_ID: '6aef7aa5a315ca797236a2eb',
       // Segundo do vídeo em que a oferta aparece (5:40 = 340). Conta pelo tempo do vídeo, não do relógio.
       REVEAL_AT: 340,
-      // Link do botão de compra (upsell 1 clique da Payt).
+      // Deixe '#': a compra é feita pelo botão de 1 clique da Payt (atributos payt_action no botão).
       CTA_URL: '#',
       // Link de recusa (downsell ou página de obrigado).
       DECLINE_URL: '/downsell/',
@@ -288,5 +290,6 @@
       }, 500);
     })();
   </script>
+  <script type="text/javascript" src="https://checkout.payt.com.br/multiple-oneclickbuyscript/LGAZ8K.js"></script>
 </body>
 </html>
