@@ -199,7 +199,9 @@
         <span class="price-badge" id="price-badge">VOCÊ ECONOMIZA 30%</span>
       </div>
 
-      <a class="cta" id="cta" href="#">GARANTIR MEU DESCONTO AGORA MESMO!</a>
+      <!-- Botão de compra com 1 clique da Payt (downsell L9OKBO, produto DR Segredo R3YJBG a R$ 46,90). -->
+      <a class="cta" id="cta" href="#" payt_action="oneclick_buy" data-object="L9OKBO-R3YJBG">GARANTIR MEU DESCONTO AGORA MESMO!</a>
+      <select payt_element="installment" data-object="L9OKBO-R3YJBG" hidden></select>
 
       <p class="timer-line">Cupom de desconto válido por: <span class="clock" id="clock">10:00</span></p>
     </section>
@@ -212,7 +214,7 @@
       DISCOUNT_PCT: 30,
       PRICE_FROM: 'R$ 67,00',
       PRICE_TO: 'R$ 46,90',
-      // Link do botão de compra (downsell 1 clique da Payt).
+      // Deixe '#': a compra é feita pelo botão de 1 clique da Payt (atributos payt_action no botão).
       CTA_URL: '#',
       // Duração do cronômetro, em minutos.
       TIMER_MINUTES: 10
@@ -328,7 +330,9 @@
             cta.style.animation = 'none';
             cta.style.boxShadow = 'none';
             cta.removeAttribute('href');
-            cta.addEventListener('click', function (e) { e.preventDefault(); });
+            cta.removeAttribute('payt_action');
+            // Bloqueia o clique antes do script da Payt (fase de captura).
+            cta.addEventListener('click', function (e) { e.preventDefault(); e.stopImmediatePropagation(); }, true);
           }
         }
         tick(); id = setInterval(tick, 1000);
@@ -443,5 +447,6 @@
       });
     })();
   </script>
+  <script type="text/javascript" src="https://checkout.payt.com.br/multiple-oneclickbuyscript/LGAZ8K.js"></script>
 </body>
 </html>
