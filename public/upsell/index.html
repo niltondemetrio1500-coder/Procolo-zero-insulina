@@ -194,8 +194,8 @@
       VTURB_SCRIPT_URL: 'https://scripts.converteai.net/dc8ab8c0-f9ac-47c3-af12-a4174ba40c45/players/6aef7aa5a315ca797236a2eb/v4/player.js',
       // ID do player (o que vai no id="vid-..." do <vturb-smartplayer>).
       VTURB_PLAYER_ID: '6aef7aa5a315ca797236a2eb',
-      // Segundo do vídeo em que a oferta aparece (o momento do pitch).
-      PITCH_SECONDS: 600,
+      // Segundo do vídeo em que a oferta aparece (5:40 = 340). Conta pelo tempo do vídeo, não do relógio.
+      REVEAL_AT: 340,
       // Link do botão de compra (upsell 1 clique da Payt).
       CTA_URL: '#',
       // Link de recusa (downsell ou página de obrigado).
@@ -207,15 +207,24 @@
 
     (function () {
       var revealed = false;
+      // Momento em que a oferta apareceu, salvo no navegador: o timer continua de onde parou se a pessoa recarregar.
+      var START_KEY = 'upsell_offer_started_at';
 
-      function startTimer(total) {
+      function loadStart() {
+        try { var v = Number(localStorage.getItem(START_KEY)); return v > 0 ? v : null; } catch (e) { return null; }
+      }
+      function saveStart(ts) {
+        try { localStorage.setItem(START_KEY, String(ts)); } catch (e) {}
+      }
+
+      function startTimer(startedAt) {
         var el = document.getElementById('clock');
+        var total = CONFIG.TIMER_MINUTES * 60;
         var id;
         function tick() {
-          var m = String(Math.floor(total / 60)).padStart(2, '0');
-          var s = String(total % 60).padStart(2, '0');
-          el.textContent = m + ':' + s;
-          if (total-- <= 0) { clearInterval(id); el.classList.add('expired'); }
+          var left = Math.max(0, total - Math.floor((Date.now() - startedAt) / 1000));
+          el.textContent = String(Math.floor(left / 60)).padStart(2, '0') + ':' + String(left % 60).padStart(2, '0');
+          if (left <= 0) { clearInterval(id); el.classList.add('expired'); }
         }
         tick();
         id = setInterval(tick, 1000);
@@ -224,10 +233,15 @@
       function revealOffer() {
         if (revealed) return;
         revealed = true;
+        var startedAt = loadStart();
+        if (!startedAt) { startedAt = Date.now(); saveStart(startedAt); }
         document.getElementById('offer').classList.add('show');
         document.getElementById('timer-wrap').classList.add('show');
-        startTimer(CONFIG.TIMER_MINUTES * 60);
+        startTimer(startedAt);
       }
+
+      // Quem já viu a oferta (e recarregou a página) vê de novo na hora, com o timer de onde parou.
+      if (loadStart()) revealOffer();
 
       // Repassa os parâmetros da URL (UTMs etc.) para os links, como o checkout faz.
       function withParams(url) {
@@ -262,17 +276,16 @@
       s.async = true;
       document.head.appendChild(s);
 
-      // A VTurb mostra o elemento-gatilho no segundo do pitch; quando ele aparece, revelamos a oferta.
-      var trigger = document.getElementById('vturb-reveal');
-      new MutationObserver(function () {
-        if (getComputedStyle(trigger).display !== 'none') revealOffer();
-      }).observe(trigger, { attributes: true, attributeFilter: ['style', 'class'] });
-
-      player.addEventListener('player:ready', function () {
-        if (typeof player.displayHiddenElements === 'function') {
-          player.displayHiddenElements(CONFIG.PITCH_SECONDS, ['#vturb-reveal'], { persist: true });
+      // Lê o tempo do vídeo no player da VTurb: pausou, não aparece; avançou até 5:40, aparece na hora.
+      // A prévia muda automática (smart autoplay) não conta.
+      if (revealed) return;
+      var watch = setInterval(function () {
+        var t = Number(player.currentTime);
+        if (!player.inSmartAutoPlay && t >= CONFIG.REVEAL_AT) {
+          clearInterval(watch);
+          revealOffer();
         }
-      });
+      }, 500);
     })();
   </script>
 </body>
