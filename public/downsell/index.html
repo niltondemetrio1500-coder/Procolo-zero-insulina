@@ -302,13 +302,87 @@
         } catch (e) { return url; }
       })(CONFIG.CTA_URL);
 
-      function startTimer(total) {
+      // Timer de 10 min: começa quando a roleta para e o início fica salvo no navegador.
+      var START_KEY = 'downsell_timer_start';
+      function loadStart() {
+        try { var v = Number(localStorage.getItem(START_KEY)); return v > 0 ? v : null; } catch (e) { return null; }
+      }
+      function startTimer() {
+        var startedAt = loadStart();
+        if (!startedAt) {
+          startedAt = Date.now();
+          try { localStorage.setItem(START_KEY, String(startedAt)); } catch (e) {}
+        }
+        var total = CONFIG.TIMER_MINUTES * 60;
         var el = document.getElementById('clock'), id;
         function tick() {
-          el.textContent = String(Math.floor(total / 60)).padStart(2, '0') + ':' + String(total % 60).padStart(2, '0');
-          if (total-- <= 0) { clearInterval(id); el.classList.add('expired'); }
+          var left = Math.max(0, total - Math.floor((Date.now() - startedAt) / 1000));
+          el.textContent = String(Math.floor(left / 60)).padStart(2, '0') + ':' + String(left % 60).padStart(2, '0');
+          if (left === 0) {
+            clearInterval(id);
+            el.classList.add('expired');
+            // Cupom expirado: o botão fica cinza e deixa de levar ao checkout.
+            cta.textContent = 'CUPOM EXPIRADO';
+            cta.style.background = '#9ca3af';
+            cta.style.cursor = 'not-allowed';
+            cta.style.animation = 'none';
+            cta.style.boxShadow = 'none';
+            cta.removeAttribute('href');
+            cta.addEventListener('click', function (e) { e.preventDefault(); });
+          }
         }
         tick(); id = setInterval(tick, 1000);
+      }
+
+      // Som curto de vitória (Web Audio, sem arquivos).
+      function winSound() {
+        try {
+          var AC = window.AudioContext || window.webkitAudioContext;
+          var ctx = new AC();
+          [523.25, 659.25, 783.99, 1046.5].forEach(function (f, i) {
+            var o = ctx.createOscillator(), g = ctx.createGain();
+            o.type = 'triangle'; o.frequency.value = f;
+            var t0 = ctx.currentTime + i * 0.12;
+            g.gain.setValueAtTime(0.0001, t0);
+            g.gain.exponentialRampToValueAtTime(0.25, t0 + 0.02);
+            g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.35);
+            o.connect(g); g.connect(ctx.destination);
+            o.start(t0); o.stop(t0 + 0.4);
+          });
+        } catch (e) {}
+      }
+
+      // Confete (canvas, sem bibliotecas).
+      function fireConfetti() {
+        var c = document.createElement('canvas');
+        c.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9999';
+        document.body.appendChild(c);
+        var ctx = c.getContext('2d'), dpr = window.devicePixelRatio || 1;
+        c.width = innerWidth * dpr; c.height = innerHeight * dpr; ctx.scale(dpr, dpr);
+        var colors = ['#22c55e', '#fbbf24', '#f472b6', '#60a5fa', '#a78bfa', '#fb923c', '#dc2626'];
+        var parts = [];
+        for (var i = 0; i < 160; i++) {
+          parts.push({
+            x: innerWidth / 2, y: innerHeight * 0.35,
+            vx: (Math.random() - 0.5) * 14, vy: -Math.random() * 13 - 4,
+            r: Math.random() * 6 + 4, rot: Math.random() * 360, vr: (Math.random() - 0.5) * 18,
+            color: colors[i % colors.length]
+          });
+        }
+        var start = performance.now();
+        function frame(now) {
+          var el = now - start;
+          ctx.clearRect(0, 0, innerWidth, innerHeight);
+          parts.forEach(function (p) {
+            p.vy += 0.35; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+            ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot * Math.PI / 180);
+            ctx.globalAlpha = Math.max(0, 1 - el / 3000);
+            ctx.fillStyle = p.color; ctx.fillRect(-p.r / 2, -p.r / 4, p.r, p.r / 2);
+            ctx.restore();
+          });
+          if (el < 3000) requestAnimationFrame(frame); else c.remove();
+        }
+        requestAnimationFrame(frame);
       }
 
       // Giro: a roleta para na fatia do cupom anunciado no topo (CONFIG.DISCOUNT_PCT).
@@ -316,18 +390,29 @@
       SLICES.forEach(function (s, i) { if (s.pct === CONFIG.DISCOUNT_PCT) target = i; });
       var btn = document.getElementById('spin-btn');
       var pointer = document.getElementById('pointer');
+      var result = document.getElementById('result');
       var spun = false;
+
+      // Quem já girou antes (timer salvo) vê o resultado direto, com o tempo que sobrou.
+      if (loadStart()) {
+        spun = true;
+        btn.style.display = 'none';
+        wheel.style.transform = 'rotate(' + (-target * step) + 'deg)';
+        result.classList.add('show');
+        startTimer();
+      }
 
       btn.addEventListener('click', function () {
         if (spun) return;
         spun = true;
         btn.disabled = true;
+        btn.textContent = 'Girando...';
         wrap.classList.add('spinning');
         wheel.classList.add('spinning');
 
         var jitter = (Math.random() - 0.5) * step * 0.6;
-        var finalDeg = 360 * 6 - target * step + jitter;
-        var duration = 5200, start = null, lastTick = 0;
+        var finalDeg = 360 * 7 - target * step + jitter;
+        var duration = 6800, start = null, lastTick = 0;
         function easeOut(t) { return 1 - Math.pow(1 - t, 4); }
         function frame(ts) {
           if (!start) start = ts;
@@ -343,11 +428,16 @@
           wrap.classList.remove('spinning'); wheel.classList.remove('spinning');
           wrap.classList.add('celebrating'); wheel.classList.add('celebrating');
           setTimeout(function () {
-            var result = document.getElementById('result');
-            result.classList.add('show');
-            startTimer(CONFIG.TIMER_MINUTES * 60);
-            result.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }, 900);
+            wrap.classList.remove('celebrating'); wheel.classList.remove('celebrating');
+          }, 2500);
+          winSound();
+          fireConfetti();
+          result.classList.add('show');
+          btn.style.display = 'none';
+          startTimer();
+          setTimeout(function () {
+            try { result.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
+          }, 400);
         }
         requestAnimationFrame(frame);
       });
