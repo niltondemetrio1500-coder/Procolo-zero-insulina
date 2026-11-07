@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Segredo da Insulina — Compra confirmada</title>
+  <style>
+    :root {
+      --primary: #16A34A; --primary-light: #22C55E;
+      --background: #F3F4F6; --surface: #FFFFFF;
+      --text: #111827; --text-muted: #4B5563; --text-subtle: #6B7280;
+      --border: #E5E7EB;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { -webkit-font-smoothing: antialiased; }
+    body {
+      min-height: 100vh; background: var(--background); color: var(--text);
+      font-family: var(--font-sans); font-size: 16px; line-height: 1.5;
+    }
+    .top-bar {
+      background: linear-gradient(var(--primary-light), var(--primary));
+      color: #fff; text-align: center; font-size: 14px; font-weight: 700;
+      padding: 12px 16px; box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    .container { width: 100%; max-width: 620px; margin: 0 auto; padding: 32px 16px 60px; }
+    .card {
+      background: var(--surface); border-radius: 16px; padding: 32px 24px; text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,.08);
+    }
+    .check {
+      width: 72px; height: 72px; margin: 0 auto 18px; border-radius: 50%;
+      background: linear-gradient(var(--primary-light), var(--primary));
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 10px 24px rgba(22,163,74,.35);
+    }
+    .check svg { width: 38px; height: 38px; }
+    h1 { font-size: 26px; font-weight: 800; line-height: 1.25; margin-bottom: 10px; }
+    .lead { color: var(--text-muted); font-size: 16px; margin-bottom: 26px; }
+    .steps { text-align: left; display: grid; gap: 14px; margin-bottom: 24px; }
+    .step {
+      display: flex; gap: 14px; align-items: flex-start;
+      background: #F9FAFB; border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px;
+    }
+    .step .num {
+      flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+      background: var(--primary); color: #fff; font-weight: 800; font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .step b { display: block; font-size: 15px; margin-bottom: 2px; }
+    .step span { color: var(--text-muted); font-size: 14px; }
+    .note { color: var(--text-subtle); font-size: 13px; }
+    @media (max-width: 480px) {
+      h1 { font-size: 22px; }
+      .card { padding: 26px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">Pedido recebido com sucesso</div>
+
+  <main class="container">
+    <div class="card">
+      <div class="check" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+
+      <h1 id="title">Obrigado pela sua compra!</h1>
+      <p class="lead">Seu pedido do <b>Segredo da Insulina</b> foi registrado.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <div>
+            <b>Confira seu e-mail</b>
+            <span>Os dados de acesso são enviados para o e-mail que você usou na compra. Se não encontrar, olhe também nas pastas <b style="display:inline">Spam</b> e <b style="display:inline">Promoções</b>.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <div>
+            <b>Pagou com Pix?</b>
+            <span>O acesso é liberado assim que o pagamento é confirmado, normalmente em poucos minutos.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <div>
+            <b>Comece hoje mesmo</b>
+            <span>Separe alguns minutos hoje para começar a sua rotina de 21 dias.</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="note">Você já pode fechar esta página.</p>
+    </div>
+  </main>
+
+  <script>
+    // Personaliza com o primeiro nome, se a Payt enviar na URL (ex.: ?name=Maria ou ?first_name=Maria).
+    (function () {
+      try {
+        var p = new URLSearchParams(window.location.search);
+        var n = (p.get('first_name') || p.get('name') || '').trim().split(/\s+/)[0];
+        if (n && /^[A-Za-zÀ-ÿ'-]{2,30}$/.test(n)) {
+          n = n.charAt(0).toUpperCase() + n.slice(1).toLowerCase();
+          document.getElementById('title').textContent = n + ', obrigado pela sua compra!';
+        }
+      } catch (e) {}
+    })();
+  </script>
+</body>
+</html>
