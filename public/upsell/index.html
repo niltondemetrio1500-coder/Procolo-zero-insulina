@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Segredo da Insulina — Oferta especial</title>
+  <style>
+    :root {
+      --primary: #16A34A; --primary-light: #22C55E;
+      --secondary: #F59E0B; --secondary-light: #FBBF24;
+      --background: #F3F4F6; --surface: #FFFFFF;
+      --text: #111827; --text-muted: #4B5563; --text-subtle: #6B7280; --text-faint: #9CA3AF;
+      --border: #E5E7EB;
+      --danger: #DC2626; --danger-soft: #FECACA;
+      --offer-border: #EA580C; --offer-bg-from: #FFF7ED; --offer-bg-to: #FFEDD5;
+      --savings: #B45309;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: "SF Mono", "Roboto Mono", Menlo, Consolas, monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { -webkit-font-smoothing: antialiased; }
+    body {
+      display: flex; flex-direction: column; min-height: 100vh;
+      background: var(--background); color: var(--text);
+      font-family: var(--font-sans); font-size: 16px; line-height: 1.5;
+    }
+
+    .top-bar {
+      background: linear-gradient(var(--secondary-light) 0%, var(--secondary) 100%);
+      color: var(--text); text-align: center; font-size: 14px; font-weight: 700; line-height: 1.45;
+      padding: 12px 16px; box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    .top-bar b { font-weight: 800; }
+
+    .container { width: 100%; max-width: 720px; margin: 0 auto; padding: 28px 16px 60px; }
+
+    .warning { display: flex; align-items: center; gap: 16px; padding: 0 4px; margin-bottom: 24px; }
+    .warning-icon { font-size: 56px; line-height: 1; flex-shrink: 0; }
+    .warning h1 { font-size: 22px; font-weight: 800; line-height: 1.25; }
+
+    .video-wrap {
+      aspect-ratio: 16 / 9; background: #000; border-radius: 16px; overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,.18);
+    }
+    .video-wrap vturb-smartplayer { display: block; width: 100%; height: 100%; }
+    .video-placeholder {
+      width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+      color: #9CA3AF; font-size: 15px; text-align: center; padding: 16px;
+    }
+
+    .below-video { margin-top: 24px; text-align: center; color: var(--text-muted); font-size: 15px; padding: 0 8px; }
+    .below-video b { color: var(--text); }
+
+    .cta-wrap {
+      text-align: center; margin-top: 32px;
+      opacity: 0; transform: translateY(16px); pointer-events: none;
+      transition: opacity 700ms, transform 700ms;
+    }
+    .cta-wrap.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+    .price-box {
+      background: linear-gradient(var(--offer-bg-from), var(--offer-bg-to));
+      border: 2px dashed var(--offer-border); border-radius: 14px;
+      padding: 16px 18px; max-width: 380px; margin: 0 auto 22px;
+      box-shadow: 0 6px 18px rgba(234,88,12,.15);
+    }
+    .price-head {
+      display: inline-block; margin-bottom: 12px; padding: 4px 12px; border-radius: 999px;
+      background: var(--danger); color: #fff; font-size: 12px; font-weight: 800;
+      letter-spacing: 1.2px; text-transform: uppercase;
+    }
+    .price-from {
+      font-size: 16px; font-weight: 600; color: var(--text-subtle);
+      text-decoration: line-through; text-decoration-color: var(--danger); text-decoration-thickness: 2px;
+    }
+    .price-from .label {
+      display: inline-block; text-decoration: none; color: var(--text-faint); font-weight: 500; margin-right: 6px;
+    }
+    .price-to { display: flex; align-items: baseline; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    .price-to .label { font-size: 16px; font-weight: 700; color: var(--text-muted); }
+    .price-to .value { font-size: 38px; font-weight: 900; line-height: 1; letter-spacing: -0.5px; color: var(--primary); }
+    .price-save { display: block; margin-top: 8px; color: var(--savings); font-size: 14px; font-weight: 700; }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1);    box-shadow: 0 10px 24px rgba(22,163,74,.40); }
+      50%      { transform: scale(1.03); box-shadow: 0 12px 30px rgba(22,163,74,.65); }
+    }
+    .cta {
+      display: inline-block; padding: 20px 44px; border-radius: 14px;
+      background: linear-gradient(var(--primary-light) 0%, var(--primary) 100%);
+      color: #fff; font-size: 22px; font-weight: 800; letter-spacing: 0.3px; text-decoration: none;
+      box-shadow: 0 10px 24px rgba(22,163,74,.45);
+      transition: transform 200ms, box-shadow 200ms;
+      animation: pulse 1.7s ease-in-out infinite;
+    }
+    .cta:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(22,163,74,.55); }
+    .cta-note { display: block; margin-top: 14px; font-size: 13px; color: var(--text-subtle); }
+
+    .decline-link {
+      display: inline-block; margin-top: 18px; font-size: 14px; color: var(--text-faint);
+      text-decoration: underline; text-underline-offset: 3px; transition: color 200ms;
+    }
+    .decline-link:hover { color: var(--text-muted); }
+
+    .timer-wrap { margin-top: 22px; text-align: center; opacity: 0; transition: opacity 600ms; }
+    .timer-wrap.show { opacity: 1; }
+    .timer-label {
+      display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-subtle);
+    }
+    .clock {
+      display: inline-block; padding: 10px 22px; border-radius: 12px;
+      background: var(--surface); border: 2px solid var(--danger-soft); color: var(--danger);
+      font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+      font-size: 44px; font-weight: 800; letter-spacing: 2px;
+      box-shadow: 0 4px 14px rgba(220,38,38,.18);
+    }
+    .clock.expired { color: var(--text-subtle); border-color: var(--border); box-shadow: none; }
+
+    /* Gatilho usado pelo "displayHiddenElements" da VTurb: quando ele aparece, a oferta e revelada. */
+    .vturb-reveal { display: none; }
+
+    @media (max-width: 480px) {
+      .top-bar { font-size: 13px; padding: 10px 14px; }
+      .warning { gap: 12px; }
+      .warning-icon { font-size: 42px; }
+      .warning h1 { font-size: 17px; }
+      .below-video { font-size: 14px; }
+      .price-box { padding: 14px; max-width: 320px; }
+      .price-head { font-size: 11px; }
+      .price-from, .price-from .label, .price-to .label { font-size: 14px; }
+      .price-to .value { font-size: 32px; }
+      .price-save { font-size: 13px; }
+      .cta { font-size: 18px; padding: 18px 32px; }
+      .clock { font-size: 36px; padding: 8px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <b>Seu pedido foi confirmado!</b> Antes de acessar, assista à mensagem abaixo.<br>
+    Ela é exclusiva para quem acabou de comprar.
+  </div>
+
+  <main class="container">
+    <div class="warning">
+      <span class="warning-icon" aria-hidden="true">🎁</span>
+      <h1>Parabéns pela sua compra!<br>Veja a mensagem especial abaixo</h1>
+    </div>
+
+    <div class="video-wrap" id="video-wrap">
+      <div class="video-placeholder" id="video-placeholder">O vídeo será exibido aqui.</div>
+    </div>
+
+    <p class="below-video">
+      Assista à mensagem acima sobre <b>o seu produto</b>.<br>
+      Uma oferta exclusiva vai aparecer logo abaixo.
+    </p>
+
+    <div class="vturb-reveal" id="vturb-reveal"></div>
+
+    <div class="cta-wrap" id="offer">
+      <div class="price-box">
+        <div class="price-head">🔥 Oferta única — só aparece agora</div>
+        <div class="price-from"><span class="label">De:</span> <span id="price-from">R$ 197,00</span></div>
+        <div class="price-to">
+          <span class="label">Por:</span>
+          <span class="value" id="price-to">R$ 67,00</span>
+        </div>
+        <span class="price-save" id="price-save">Você economiza R$ 130,00</span>
+      </div>
+
+      <a class="cta" id="cta" href="#">QUERO ATIVAR AGORA <b id="cta-price">R$67,00</b></a>
+      <span class="cta-note">Oferta única por tempo limitado</span>
+
+      <div>
+        <a class="decline-link" id="decline" href="#">Não quero fazer parte do clube do segredo agora!</a>
+      </div>
+
+      <div class="timer-wrap" id="timer-wrap">
+        <span class="timer-label">Esta oferta expira em</span>
+        <span class="clock" id="clock">10:00</span>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ===================== CONFIGURAÇÃO =====================
+    // Preencha aqui. Tudo que estiver vazio usa o comportamento de teste descrito ao lado.
+    var CONFIG = {
+      // Script do player da VTurb, copiado do painel (ex.: https://scripts.converteai.net/<conta>/players/<id>/v4/player.js).
+      // Vazio: mostra um espaço reservado no lugar do vídeo e a oferta aparece na hora.
+      VTURB_SCRIPT_URL: '',
+      // ID do player (o que vai no id="vid-..." do <vturb-smartplayer>).
+      VTURB_PLAYER_ID: '',
+      // Segundo do vídeo em que a oferta aparece (o momento do pitch).
+      PITCH_SECONDS: 600,
+      // Link do botão de compra (upsell 1 clique da Payt).
+      CTA_URL: '#',
+      // Link de recusa (downsell ou página de obrigado).
+      DECLINE_URL: '#',
+      // Duração do cronômetro, em minutos.
+      TIMER_MINUTES: 10
+    };
+    // ========================================================
+
+    (function () {
+      var revealed = false;
+
+      function startTimer(total) {
+        var el = document.getElementById('clock');
+        var id;
+        function tick() {
+          var m = String(Math.floor(total / 60)).padStart(2, '0');
+          var s = String(total % 60).padStart(2, '0');
+          el.textContent = m + ':' + s;
+          if (total-- <= 0) { clearInterval(id); el.classList.add('expired'); }
+        }
+        tick();
+        id = setInterval(tick, 1000);
+      }
+
+      function revealOffer() {
+        if (revealed) return;
+        revealed = true;
+        document.getElementById('offer').classList.add('show');
+        document.getElementById('timer-wrap').classList.add('show');
+        startTimer(CONFIG.TIMER_MINUTES * 60);
+      }
+
+      // Repassa os parâmetros da URL (UTMs etc.) para os links, como o checkout faz.
+      function withParams(url) {
+        if (!url || url === '#') return url;
+        try {
+          var target = new URL(url, window.location.href);
+          new URLSearchParams(window.location.search).forEach(function (v, k) {
+            if (!target.searchParams.has(k)) target.searchParams.set(k, v);
+          });
+          return target.toString();
+        } catch (e) { return url; }
+      }
+      document.getElementById('cta').href = withParams(CONFIG.CTA_URL);
+      document.getElementById('decline').href = withParams(CONFIG.DECLINE_URL);
+
+      var params = new URLSearchParams(window.location.search);
+      if (params.get('preview') === '1') { revealOffer(); }
+
+      if (!CONFIG.VTURB_SCRIPT_URL || !CONFIG.VTURB_PLAYER_ID) {
+        revealOffer();
+        return;
+      }
+
+      // Monta o player da VTurb.
+      var wrap = document.getElementById('video-wrap');
+      wrap.innerHTML = '';
+      var player = document.createElement('vturb-smartplayer');
+      player.id = 'vid-' + String(CONFIG.VTURB_PLAYER_ID).replace(/^vid-/, '');
+      wrap.appendChild(player);
+      var s = document.createElement('script');
+      s.src = CONFIG.VTURB_SCRIPT_URL;
+      s.async = true;
+      document.head.appendChild(s);
+
+      // A VTurb mostra o elemento-gatilho no segundo do pitch; quando ele aparece, revelamos a oferta.
+      var trigger = document.getElementById('vturb-reveal');
+      new MutationObserver(function () {
+        if (getComputedStyle(trigger).display !== 'none') revealOffer();
+      }).observe(trigger, { attributes: true, attributeFilter: ['style', 'class'] });
+
+      player.addEventListener('player:ready', function () {
+        if (typeof player.displayHiddenElements === 'function') {
+          player.displayHiddenElements(CONFIG.PITCH_SECONDS, ['#vturb-reveal'], { persist: true });
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
