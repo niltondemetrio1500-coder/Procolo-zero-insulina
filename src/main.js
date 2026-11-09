@@ -19,6 +19,7 @@ function checkoutHref() {
   return url.toString();
 }
 function trackCheckoutClick() {
+  track(etapa(LAST_STEP + 6, 'clicou_no_checkout'), { currency: 'BRL', value: 47.90, transport_type: 'beacon' });
   if (typeof window.gtag === 'function') window.gtag('event', 'begin_checkout', { currency: 'BRL', value: 47.90, transport_type: 'beacon' });
 }
 const current = () => FLOW[state.step];
@@ -85,6 +86,17 @@ function generation() { shell(`<section class="generation-screen">${topbar()}<di
 function runPlan() { const run = ++runs.plan; const tick = () => { if (run !== runs.plan || state.screen !== 'generation') return; if (state.planIndex < 4) setTimeout(() => { if (run !== runs.plan || state.screen !== 'generation') return; state.planIndex += 1; render(); tick(); }, 650); else setTimeout(() => { if (run !== runs.plan || state.screen !== 'generation') return; state.screen = 'offer'; render(); }, 650); }; tick(); }
 function offer() { const checkout = esc(checkoutHref()); const faqs = ['O Segredo da Insulina realmente funciona?', 'Quanto tempo leva para ver resultados?', 'É seguro? Tem efeitos colaterais?', 'Como vou receber o protocolo?', 'E se não funcionar pra mim?', 'O pagamento é seguro?', 'Preciso comprar ingredientes caros?']; shell(`<section class="offer-screen">${topbar()}<div class="scarcity">🔥 Restam 8 vagas do plano para mulheres 40-54 hoje</div><h1>${name()}, sua rotina de 21 dias com Segredo da Insulina foi Gerada com Sucesso</h1><p class="offer-subtitle">Ele é exclusivo e gerado só uma vez, não saia dessa página para não perder</p><div class="plan-card"><div class="plan-head">SEU PLANO EXCLUSIVO<strong>21 Dias de Tratamento</strong></div><div class="plan-milestones"><p>✨ <b>EM 7 DIAS</b><strong>Desincha e vê os primeiros resultados</strong></p><p>🔥 <b>EM 14 DIAS</b><strong>Perda de até 6kg</strong></p><p>🏆 <b>EM 21 DIAS</b><strong>Perda de até 12kg</strong><em>META</em></p></div><div class="result-target">🎯 Resultado esperado: até -12kg em 21 dias</div></div><h2 class="bonus-heading">Você ainda leva <span>3 bônus</span> para acelerar seus resultados</h2><div class="bonus-stack"><p>🎁 <b>Bônus 1: Dicas para acelerar resultado</b><small>São dicas que vão aumentar seus resultados em até 30%</small></p><p>🎁 <b>Bônus 2: 40 Sobremesas que aceleram o Metabolismo</b><small>Você pode comer doces sem problemas</small></p><p>🎁 <b>Bônus 3: 20 Shakes Emagrecedores</b><small>Vitaminas, shakes e bebidas deliciosas</small></p></div><div class="access-card"><div>VEJA<strong>Tudo que você terá acesso garantindo</strong><small>Até 21 de outubro de 2026</small></div><ul><li>✅ Receitas completas do Segredo da Insulina</li><li>✅ Rotina de 21 dias passo a passo</li><li>✅ Acesso ao Aplicativo Exclusivo</li><li>✅ Lista completa dos ingredientes</li><li>✅ Acesso vitalício ao app</li><li>🎁 BÔNUS: Dicas para acelerar resultados</li><li>🎁 BÔNUS: 20 Shakes para emagrecer</li><li>🎁 BÔNUS: 40 sobremesas que aceleram metabolismo</li></ul></div><div class="offer-price"><p>TUDO ISSO DE <s>R$ 293,80</s></p><small>POR APENAS</small><strong>R$ 47,90</strong><span>Ou 6x de R$ 8,98</span><a class="primary-cta" href="${checkout}" data-checkout target="_blank" rel="noopener">QUERO COMEÇAR 🥰</a></div><div class="guarantee"><b>GARANTIA<br/><strong>30</strong><br/>DIAS</b><div><h2>Garantia de Reembolso</h2><p>Todo produto é obrigado a dar no mínimo 7 dias de garantia, porém confiamos tanto na fórmula que oferecemos 30 dias corridos.</p><p>Ou seja, se você não gostar ou não funcionar pra você, nós reembolsaremos cada centavo que você pagou, sem questionar.</p></div></div><h2 class="faq-title">❓ Perguntas Frequentes</h2><div class="faq-list">${faqs.map((q) => `<details><summary>${q}</summary><p>Estamos aqui para facilitar sua rotina, com acesso imediato ao protocolo e suporte às informações do plano.</p></details>`).join('')}</div><a class="primary-cta final-cta" href="${checkout}" data-checkout target="_blank" rel="noopener">QUERO COMEÇAR AGORA! 🔥</a><p class="payment-trust">🔒 Pagamento 100% seguro · Seus dados estão protegidos</p></section>`, 'quiz-shell'); app.querySelectorAll('[data-checkout]').forEach((link) => link.addEventListener('click', trackCheckoutClick)); }
 
+// Eventos do funil no GA4: nomes em portugues, numerados na ordem em que a pessoa passa.
+// Ordenando os eventos por nome no GA4, a lista fica na sequencia do funil.
+const STEP_NAMES = {
+  age: 'idade', body: 'corpo', bodyArea: 'area_do_corpo', notAlone: 'nao_esta_sozinha', globo: 'materia_globo',
+  name: 'nome', weightImpact: 'o_que_incomoda', appearance: 'ja_tentou_emagrecer', biology: 'corpo_resiste',
+  barriers: 'o_que_impede', comparison: 'comparacao_metodos', goals: 'objetivos', bloat: 'inchaco',
+  natural: 'como_funciona', weight: 'peso_atual', height: 'altura', desiredWeight: 'peso_desejado',
+  routine: 'rotina', sleep: 'sono', forecast: 'previsao_resultado', commitment: 'compromisso', firstResult: 'primeiro_resultado'
+};
+const LAST_STEP = FLOW.length;
+const etapa = (number, label) => `etapa_${String(number).padStart(2, '0')}_${label}`.slice(0, 40);
 const trackedScreens = new Set();
 function track(event, params = {}) {
   if (trackedScreens.has(event)) return;
@@ -92,14 +104,16 @@ function track(event, params = {}) {
   if (typeof window.gtag === 'function') window.gtag('event', event, params);
 }
 function trackScreen() {
-  if (state.screen === 'flow') {
+  if (state.screen === 'intro') track(etapa(0, 'pagina_inicial'));
+  else if (state.screen === 'flow') {
     const step = current();
     const number = state.step + 1;
-    if (number === 1) track('quiz_start');
-    track(`quiz_${String(number).padStart(2, '0')}_${step.id}`.toLowerCase().slice(0, 40), { step_number: number, step_id: step.id });
-  } else if (state.screen === 'analysis') track('quiz_complete');
-  else if (state.screen === 'testimonials') track('view_testimonials');
-  else if (state.screen === 'offer') track('view_offer', { currency: 'BRL', value: 47.90 });
+    track(etapa(number, STEP_NAMES[step.id] || step.id.toLowerCase()), { step_number: number, step_id: step.id });
+  } else if (state.screen === 'analysis') track(etapa(LAST_STEP + 1, 'terminou_quiz'));
+  else if (state.screen === 'detail') track(etapa(LAST_STEP + 2, 'resultado_analise'));
+  else if (state.screen === 'testimonials') track(etapa(LAST_STEP + 3, 'depoimentos'));
+  else if (state.screen === 'generation') track(etapa(LAST_STEP + 4, 'gerando_plano'));
+  else if (state.screen === 'offer') track(etapa(LAST_STEP + 5, 'chegou_na_oferta'), { currency: 'BRL', value: 47.90 });
 }
 function render() { trackScreen(); if (state.screen === 'intro') intro(); else if (state.screen === 'flow') flowScreen(); else if (state.screen === 'analysis') analysis(); else if (state.screen === 'detail') detailScreen(); else if (state.screen === 'testimonials') testimonials(); else if (state.screen === 'generation') generation(); else offer(); }
 render();
