@@ -2,7 +2,23 @@ import './styles.css';
 import { ANALYSIS_STEPS, ASSETS, CHECKOUT_URL, FLOW } from './data.js';
 
 const app = document.querySelector('#app');
-const state = { screen: 'intro', step: 0, answers: {}, selections: {}, analysisIndex: 0, planIndex: 0 };
+const state = { screen: 'intro', step: 0, answers: {}, selections: {}, analysisIndex: 0, planIndex: 0, scratched: false };
+
+// Raspadinha antes da oferta (teste A/B): metade das visitantes ve a raspadinha, metade vai direto para a oferta.
+// Forcar uma versao para conferir: ?raspadinha=1 (com) ou ?raspadinha=0 (sem).
+const SCRATCH = { pct: 86, anchor: 'R$ 293,80', price: 'R$ 39,90' };
+const SCRATCH_KEY = 'raspadinha_ab';
+const SHOW_SCRATCH = (() => {
+  const forced = new URLSearchParams(window.location.search).get('raspadinha');
+  let value = forced === '1' || forced === '0' ? forced : null;
+  try {
+    if (!value) value = localStorage.getItem(SCRATCH_KEY);
+    if (value !== '1' && value !== '0') value = Math.random() < 0.5 ? '1' : '0';
+    localStorage.setItem(SCRATCH_KEY, value);
+  } catch (e) { if (value !== '1' && value !== '0') value = Math.random() < 0.5 ? '1' : '0'; }
+  return value === '1';
+})();
+const VERSION = SHOW_SCRATCH ? 'com_raspadinha' : 'sem_raspadinha';
 const runs = { analysis: 0, plan: 0 };
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const esc = (value) => String(value).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[c]));
@@ -16,10 +32,12 @@ function checkoutHref() {
     if (!url.searchParams.has('utm_source')) url.searchParams.set('utm_source', 'google');
     if (!url.searchParams.has('utm_medium')) url.searchParams.set('utm_medium', 'cpc');
   }
+  // Versao do teste A/B no checkout (coluna SCK da Utmify), para comparar as vendas de cada versao.
+  if (!url.searchParams.has('sck')) url.searchParams.set('sck', VERSION);
   return url.toString();
 }
 function trackCheckoutClick() {
-  track(etapa(LAST_STEP + 6, 'clicou_no_checkout'), { currency: 'BRL', value: 39.90, transport_type: 'beacon' });
+  track(etapa(LAST_STEP + 6, 'clicou_no_checkout'), { currency: 'BRL', value: 39.90, transport_type: 'beacon', versao: VERSION });
   if (typeof window.gtag === 'function') window.gtag('event', 'begin_checkout', { currency: 'BRL', value: 39.90, transport_type: 'beacon' });
 }
 const current = () => FLOW[state.step];
@@ -83,8 +101,76 @@ function runAnalysis() { const run = ++runs.analysis; const tick = () => { if (r
 function detailScreen() { const bmi = (getWeight() / ((getHeight() / 100) ** 2)).toFixed(1); shell(`<section class="detail-screen">${topbar()}<h2><span>${name()}</span>, sua análise está pronta.</h2><div class="bmi-card"><strong>${bmi}</strong><small>Seu IMC: <b>Sobrepeso</b></small><hr/><h4>⚠️ Sinais de alerta identificados:</h4><p>❌ Saúde em risco</p><p>❌ Hormônio da saciedade fora de sincronia</p><p>❌ Metabolismo lento</p><p>❌ Resistência ao emagrecimento abdominal</p></div><div class="green-callout">🌿 Inflamação intestinal identificada. O Segredo da Insulina começa a agir na primeira semana.</div><h3>Benefícios do <span>Segredo da Insulina</span> 👇</h3><div class="benefit-stack"><p>✅ Metabolismo reativado</p><p>✅ Barriga desinchada nos primeiros dias</p><p>✅ Fome controlada sem remédio</p><p>✅ Mais energia e Saúde</p><p>✅ Sem efeito sanfona</p><p>✅ Sobremesas que não travam o resultado</p></div><img class="detail-testimonial" src="${ASSETS.testimonial}" alt="Depoimento antes e depois"/><blockquote>“Perdi 11kg em 5 semanas!”<small>Rose, 52 anos - São Paulo<br/>⭐⭐⭐⭐⭐</small></blockquote><button class="btn-quiz" data-action="detail-next">Continuar</button></section>`, 'quiz-shell'); app.querySelector('[data-action="back"]').onclick = () => { state.screen = 'flow'; state.step = FLOW.length - 1; render(); }; app.querySelector('[data-action="detail-next"]').onclick = () => { state.screen = 'testimonials'; render(); }; }
 function testimonials() { const cards = [[ASSETS.maria, '-9kg', 'Perdi 9kg em 21 dias. Tive que jogar algumas calças e shorts fora.', 'Maria, 47 anos'], [ASSETS.rosana, '-7kg', 'Minha pressão normalizou e o médico reduziu meu remédio.', 'Rosana, 52 anos'], [ASSETS.fernanda, '-11kg', 'Me olhei no espelho e me reconheci de novo.', 'Fernanda, 43 anos'], [ASSETS.claudia, '-8kg', 'Voltei a ter energia pra cuidar dos meus filhos.', 'Claudia, 36 anos']]; shell(`<section class="testimonial-screen">${topbar()}<h2>Veja quem já transformou o corpo com o <span>Segredo da Insulina</span></h2>${cards.map(([image, lossText, quote, person]) => `<article class="testimonial-card"><img src="${image}" alt="Antes e depois - ${person}"/><strong>${lossText}</strong><p>“${quote}”</p><small>${person}<br/>⭐⭐⭐⭐⭐</small></article>`).join('')}<button class="btn-quiz" data-action="testimonials-next">Quero essa transformação</button></section>`, 'quiz-shell'); app.querySelector('[data-action="back"]').onclick = () => { state.screen = 'detail'; render(); }; app.querySelector('[data-action="testimonials-next"]').onclick = () => { runs.plan += 1; state.screen = 'generation'; state.planIndex = 0; render(); runPlan(); }; }
 function generation() { shell(`<section class="generation-screen">${topbar()}<div class="generation-card"><span>✨</span><h2>Sua rotina do <b>Segredo da Insulina</b> de <b>21 dias</b> está pronta!</h2></div><div class="generation-arrow">⬇️</div><div class="generation-list">${['Montando sua rotina de 21 dias', 'Personalizando seu Segredo da Insulina', 'Calculando Ingredientes e receitas', 'Preparando seus bônus exclusivos', 'Rotina Pronta'].map((text, i) => `<p class="${i < state.planIndex ? 'done' : i === state.planIndex ? 'active' : ''}">${i < state.planIndex ? '✅' : i === state.planIndex ? '⏳' : '◻️'} ${text}</p>`).join('')}</div><div class="analysis-bar"><div style="width:${Math.max(8, state.planIndex * 25)}%"></div></div></section>`, 'analysis-shell'); app.querySelector('[data-action="back"]').onclick = () => { runs.plan += 1; state.screen = 'testimonials'; render(); }; }
-function runPlan() { const run = ++runs.plan; const tick = () => { if (run !== runs.plan || state.screen !== 'generation') return; if (state.planIndex < 4) setTimeout(() => { if (run !== runs.plan || state.screen !== 'generation') return; state.planIndex += 1; render(); tick(); }, 650); else setTimeout(() => { if (run !== runs.plan || state.screen !== 'generation') return; state.screen = 'offer'; render(); }, 650); }; tick(); }
-function offer() { const checkout = esc(checkoutHref()); const faqs = ['O Segredo da Insulina realmente funciona?', 'Quanto tempo leva para ver resultados?', 'É seguro? Tem efeitos colaterais?', 'Como vou receber o protocolo?', 'E se não funcionar pra mim?', 'O pagamento é seguro?', 'Preciso comprar ingredientes caros?']; shell(`<section class="offer-screen">${topbar()}<div class="scarcity">🔥 Restam 8 vagas do plano para mulheres 40-54 hoje</div><h1>${name()}, sua rotina de 21 dias com Segredo da Insulina foi Gerada com Sucesso</h1><p class="offer-subtitle">Ele é exclusivo e gerado só uma vez, não saia dessa página para não perder</p><div class="plan-card"><div class="plan-head">SEU PLANO EXCLUSIVO<strong>21 Dias de Tratamento</strong></div><div class="plan-milestones"><p>✨ <b>EM 7 DIAS</b><strong>Desincha e vê os primeiros resultados</strong></p><p>🔥 <b>EM 14 DIAS</b><strong>Perda de até 6kg</strong></p><p>🏆 <b>EM 21 DIAS</b><strong>Perda de até 12kg</strong><em>META</em></p></div><div class="result-target">🎯 Resultado esperado: até -12kg em 21 dias</div></div><h2 class="bonus-heading">Você ainda leva <span>3 bônus</span> para acelerar seus resultados</h2><div class="bonus-stack"><p>🎁 <b>Bônus 1: Dicas para acelerar resultado</b><small>São dicas que vão aumentar seus resultados em até 30%</small></p><p>🎁 <b>Bônus 2: 40 Sobremesas que aceleram o Metabolismo</b><small>Você pode comer doces sem problemas</small></p><p>🎁 <b>Bônus 3: 20 Shakes Emagrecedores</b><small>Vitaminas, shakes e bebidas deliciosas</small></p></div><div class="access-card"><div>VEJA<strong>Tudo que você terá acesso garantindo</strong><small>Até 21 de outubro de 2026</small></div><ul><li>✅ Receitas completas do Segredo da Insulina</li><li>✅ Rotina de 21 dias passo a passo</li><li>✅ Acesso ao Aplicativo Exclusivo</li><li>✅ Lista completa dos ingredientes</li><li>✅ Acesso vitalício ao app</li><li>🎁 BÔNUS: Dicas para acelerar resultados</li><li>🎁 BÔNUS: 20 Shakes para emagrecer</li><li>🎁 BÔNUS: 40 sobremesas que aceleram metabolismo</li></ul></div><div class="offer-price"><p>TUDO ISSO DE <s>R$ 293,80</s></p><small>POR APENAS</small><strong>R$ 39,90</strong><span>Ou 6x de R$ 7,49</span><a class="primary-cta" href="${checkout}" data-checkout target="_blank" rel="noopener">QUERO COMEÇAR 🥰</a></div><div class="guarantee"><b>GARANTIA<br/><strong>30</strong><br/>DIAS</b><div><h2>Garantia de Reembolso</h2><p>Todo produto é obrigado a dar no mínimo 7 dias de garantia, porém confiamos tanto na fórmula que oferecemos 30 dias corridos.</p><p>Ou seja, se você não gostar ou não funcionar pra você, nós reembolsaremos cada centavo que você pagou, sem questionar.</p></div></div><h2 class="faq-title">❓ Perguntas Frequentes</h2><div class="faq-list">${faqs.map((q) => `<details><summary>${q}</summary><p>Estamos aqui para facilitar sua rotina, com acesso imediato ao protocolo e suporte às informações do plano.</p></details>`).join('')}</div><a class="primary-cta final-cta" href="${checkout}" data-checkout target="_blank" rel="noopener">QUERO COMEÇAR AGORA! 🔥</a><p class="payment-trust">🔒 Pagamento 100% seguro · Seus dados estão protegidos</p></section>`, 'quiz-shell'); app.querySelectorAll('[data-checkout]').forEach((link) => link.addEventListener('click', trackCheckoutClick)); }
+function runPlan() { const run = ++runs.plan; const tick = () => { if (run !== runs.plan || state.screen !== 'generation') return; if (state.planIndex < 4) setTimeout(() => { if (run !== runs.plan || state.screen !== 'generation') return; state.planIndex += 1; render(); tick(); }, 650); else setTimeout(() => { if (run !== runs.plan || state.screen !== 'generation') return; state.screen = SHOW_SCRATCH && !state.scratched ? 'scratch' : 'offer'; render(); }, 650); }; tick(); }
+
+function scratchScreen() {
+  shell(`<section class="scratch-screen">${topbar()}<span class="scratch-eyebrow">🎁 Antes de liberar seu plano</span><h1 class="scratch-title"><span class="scratch-name">${esc(name())}</span>, sua rotina está pronta e você desbloqueou um <span class="scratch-hl">desconto especial</span>!</h1><p class="scratch-sub">Raspe o cartão abaixo com o dedo e <b>descubra quanto você vai economizar hoje</b> 👇</p><div class="scratch-ticket"><div class="scratch-inner" id="scratch-inner"><div class="scratch-prize"><span class="scratch-label">Seu desconto</span><span class="scratch-big">${SCRATCH.pct}% OFF</span><span class="scratch-small">no seu plano completo</span></div><canvas class="scratch-canvas" id="scratch-canvas" aria-label="Área para raspar e revelar o desconto"></canvas><span class="scratch-hint" id="scratch-hint">👆 Raspe aqui</span></div></div><button class="scratch-reveal" id="scratch-reveal" type="button">Não consegue raspar? Toque para revelar</button><div class="scratch-result" id="scratch-result"><div class="scratch-price"><span>Seu plano completo de <s>${SCRATCH.anchor}</s></span><strong>sai por ${SCRATCH.price}</strong><em>✓ Desconto de ${SCRATCH.pct}% aplicado</em></div><button class="primary-cta scratch-cta" data-action="scratch-next" type="button">VER MEU PLANO COM ${SCRATCH.pct}% OFF</button></div></section>`, 'quiz-shell scratch-shell');
+  app.querySelector('[data-action="back"]').onclick = () => { runs.plan += 1; state.screen = 'testimonials'; render(); };
+  app.querySelector('[data-action="scratch-next"]').onclick = () => { state.screen = 'offer'; render(); };
+  setupScratch();
+}
+function setupScratch() {
+  const inner = app.querySelector('#scratch-inner');
+  const canvas = app.querySelector('#scratch-canvas');
+  const hint = app.querySelector('#scratch-hint');
+  const revealBtn = app.querySelector('#scratch-reveal');
+  const result = app.querySelector('#scratch-result');
+  const ctx = canvas.getContext('2d');
+  let drawing = false; let moves = 0; let done = false;
+  const paint = () => {
+    const dpr = window.devicePixelRatio || 1; const w = inner.clientWidth; const h = inner.clientHeight;
+    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.globalCompositeOperation = 'source-over';
+    const g = ctx.createLinearGradient(0, 0, w, h);
+    g.addColorStop(0, '#b9bcc4'); g.addColorStop(0.45, '#e9ebef'); g.addColorStop(0.55, '#d3d6dc'); g.addColorStop(1, '#a9adb6');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+    ctx.globalAlpha = 0.18;
+    for (let i = 0; i < 260; i += 1) { ctx.fillStyle = i % 2 ? '#ffffff' : '#7a7f8a'; ctx.fillRect(Math.random() * w, Math.random() * h, 2, 2); }
+    ctx.globalAlpha = 1; ctx.fillStyle = '#5b606b'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = `800 ${Math.round(h * 0.15)}px "DM Sans", Arial, sans-serif`; ctx.fillText('RASPE AQUI', w / 2, h * 0.42);
+    ctx.font = `600 ${Math.round(h * 0.075)}px "DM Sans", Arial, sans-serif`; ctx.fillText('e descubra seu desconto', w / 2, h * 0.6);
+  };
+  const point = (e) => { const r = canvas.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+  // Apaga o caminho inteiro do dedo (linha do ponto anterior ao atual), para raspadas rápidas não deixarem buracos.
+  let last = null;
+  const scratch = (p) => {
+    const radius = Math.max(18, inner.clientWidth * 0.07);
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath(); ctx.arc(p.x, p.y, radius, 0, Math.PI * 2); ctx.fill();
+    if (last) { ctx.lineWidth = radius * 2; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke(); }
+    last = p;
+  };
+  const cleared = () => { const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data; let clear = 0; let total = 0; for (let i = 3; i < data.length; i += 96) { total += 1; if (data[i] === 0) clear += 1; } return clear / total; };
+  const reveal = () => {
+    if (done) return; done = true; state.scratched = true;
+    hint.hidden = true; revealBtn.hidden = true; canvas.classList.add('gone'); result.classList.add('show');
+    track(etapa(LAST_STEP + 4, 'raspadinha_raspou'), { versao: VERSION });
+    if (!window.matchMedia || !window.matchMedia('(prefers-reduced-motion: reduce)').matches) confetti(inner);
+    setTimeout(() => { try { result.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }, 500);
+  };
+  canvas.addEventListener('pointerdown', (e) => { if (done) return; drawing = true; last = null; hint.hidden = true; try { canvas.setPointerCapture(e.pointerId); } catch (err) {} scratch(point(e)); });
+  canvas.addEventListener('pointermove', (e) => { if (!drawing || done) return; scratch(point(e)); moves += 1; if (moves % 6 === 0 && cleared() > 0.45) reveal(); });
+  const stop = () => { drawing = false; last = null; if (!done && cleared() > 0.45) reveal(); };
+  canvas.addEventListener('pointerup', stop); canvas.addEventListener('pointercancel', stop);
+  revealBtn.onclick = reveal;
+  paint();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (!done && moves === 0) paint(); });
+}
+function confetti(origin) {
+  const c = document.createElement('canvas'); c.className = 'scratch-confetti'; document.body.appendChild(c);
+  const cx = c.getContext('2d'); const dpr = window.devicePixelRatio || 1;
+  c.width = innerWidth * dpr; c.height = innerHeight * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const colors = ['#18b86a', '#f47721', '#fbbf24', '#dc2626', '#60a5fa', '#f472b6']; const r = origin.getBoundingClientRect();
+  const parts = Array.from({ length: 140 }, (_, i) => ({ x: r.left + r.width / 2, y: r.top + r.height / 2, vx: (Math.random() - 0.5) * 13, vy: -Math.random() * 12 - 3, s: Math.random() * 6 + 4, rot: Math.random() * 360, vr: (Math.random() - 0.5) * 16, col: colors[i % colors.length] }));
+  const t0 = performance.now();
+  const frame = (now) => {
+    const el = now - t0; cx.clearRect(0, 0, innerWidth, innerHeight);
+    parts.forEach((p) => { p.vy += 0.33; p.x += p.vx; p.y += p.vy; p.rot += p.vr; cx.save(); cx.translate(p.x, p.y); cx.rotate(p.rot * Math.PI / 180); cx.globalAlpha = Math.max(0, 1 - el / 2600); cx.fillStyle = p.col; cx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); cx.restore(); });
+    if (el < 2600) requestAnimationFrame(frame); else c.remove();
+  };
+  requestAnimationFrame(frame);
+}
+function offer() { const checkout = esc(checkoutHref()); const faqs = ['O Segredo da Insulina realmente funciona?', 'Quanto tempo leva para ver resultados?', 'É seguro? Tem efeitos colaterais?', 'Como vou receber o protocolo?', 'E se não funcionar pra mim?', 'O pagamento é seguro?', 'Preciso comprar ingredientes caros?']; shell(`<section class="offer-screen">${topbar()}<div class="scarcity">🔥 Restam 8 vagas do plano para mulheres 40-54 hoje</div><h1>${name()}, sua rotina de 21 dias com Segredo da Insulina foi Gerada com Sucesso</h1><p class="offer-subtitle">Ele é exclusivo e gerado só uma vez, não saia dessa página para não perder</p><div class="plan-card"><div class="plan-head">SEU PLANO EXCLUSIVO<strong>21 Dias de Tratamento</strong></div><div class="plan-milestones"><p>✨ <b>EM 7 DIAS</b><strong>Desincha e vê os primeiros resultados</strong></p><p>🔥 <b>EM 14 DIAS</b><strong>Perda de até 6kg</strong></p><p>🏆 <b>EM 21 DIAS</b><strong>Perda de até 12kg</strong><em>META</em></p></div><div class="result-target">🎯 Resultado esperado: até -12kg em 21 dias</div></div><h2 class="bonus-heading">Você ainda leva <span>3 bônus</span> para acelerar seus resultados</h2><div class="bonus-stack"><p>🎁 <b>Bônus 1: Dicas para acelerar resultado</b><small>São dicas que vão aumentar seus resultados em até 30%</small></p><p>🎁 <b>Bônus 2: 40 Sobremesas que aceleram o Metabolismo</b><small>Você pode comer doces sem problemas</small></p><p>🎁 <b>Bônus 3: 20 Shakes Emagrecedores</b><small>Vitaminas, shakes e bebidas deliciosas</small></p></div><div class="access-card"><div>VEJA<strong>Tudo que você terá acesso garantindo</strong><small>Até 21 de outubro de 2026</small></div><ul><li>✅ Receitas completas do Segredo da Insulina</li><li>✅ Rotina de 21 dias passo a passo</li><li>✅ Acesso ao Aplicativo Exclusivo</li><li>✅ Lista completa dos ingredientes</li><li>✅ Acesso vitalício ao app</li><li>🎁 BÔNUS: Dicas para acelerar resultados</li><li>🎁 BÔNUS: 20 Shakes para emagrecer</li><li>🎁 BÔNUS: 40 sobremesas que aceleram metabolismo</li></ul></div><div class="offer-price">${state.scratched ? `<div class="discount-applied">✓ Seu desconto de ${SCRATCH.pct}% foi aplicado</div>` : ''}<p>TUDO ISSO DE <s>R$ 293,80</s></p><small>POR APENAS</small><strong>R$ 39,90</strong><span>Ou 6x de R$ 7,49</span><a class="primary-cta" href="${checkout}" data-checkout target="_blank" rel="noopener">${state.scratched ? `QUERO MEU PLANO COM ${SCRATCH.pct}% OFF 🥰` : 'QUERO COMEÇAR 🥰'}</a></div><div class="guarantee"><b>GARANTIA<br/><strong>30</strong><br/>DIAS</b><div><h2>Garantia de Reembolso</h2><p>Todo produto é obrigado a dar no mínimo 7 dias de garantia, porém confiamos tanto na fórmula que oferecemos 30 dias corridos.</p><p>Ou seja, se você não gostar ou não funcionar pra você, nós reembolsaremos cada centavo que você pagou, sem questionar.</p></div></div><h2 class="faq-title">❓ Perguntas Frequentes</h2><div class="faq-list">${faqs.map((q) => `<details><summary>${q}</summary><p>Estamos aqui para facilitar sua rotina, com acesso imediato ao protocolo e suporte às informações do plano.</p></details>`).join('')}</div><a class="primary-cta final-cta" href="${checkout}" data-checkout target="_blank" rel="noopener">QUERO COMEÇAR AGORA! 🔥</a><p class="payment-trust">🔒 Pagamento 100% seguro · Seus dados estão protegidos</p></section>`, 'quiz-shell'); app.querySelectorAll('[data-checkout]').forEach((link) => link.addEventListener('click', trackCheckoutClick)); }
 
 // Eventos do funil no GA4: nomes em portugues, numerados na ordem em que a pessoa passa.
 // Ordenando os eventos por nome no GA4, a lista fica na sequencia do funil.
@@ -113,7 +199,8 @@ function trackScreen() {
   else if (state.screen === 'detail') track(etapa(LAST_STEP + 2, 'resultado_analise'));
   else if (state.screen === 'testimonials') track(etapa(LAST_STEP + 3, 'depoimentos'));
   else if (state.screen === 'generation') track(etapa(LAST_STEP + 4, 'gerando_plano'));
-  else if (state.screen === 'offer') track(etapa(LAST_STEP + 5, 'chegou_na_oferta'), { currency: 'BRL', value: 39.90 });
+  else if (state.screen === 'scratch') track(etapa(LAST_STEP + 4, 'raspadinha_vista'), { versao: VERSION });
+  else if (state.screen === 'offer') track(etapa(LAST_STEP + 5, 'chegou_na_oferta'), { currency: 'BRL', value: 39.90, versao: VERSION });
 }
-function render() { trackScreen(); if (state.screen === 'intro') intro(); else if (state.screen === 'flow') flowScreen(); else if (state.screen === 'analysis') analysis(); else if (state.screen === 'detail') detailScreen(); else if (state.screen === 'testimonials') testimonials(); else if (state.screen === 'generation') generation(); else offer(); }
+function render() { trackScreen(); if (state.screen === 'intro') intro(); else if (state.screen === 'flow') flowScreen(); else if (state.screen === 'analysis') analysis(); else if (state.screen === 'detail') detailScreen(); else if (state.screen === 'testimonials') testimonials(); else if (state.screen === 'generation') generation(); else if (state.screen === 'scratch') scratchScreen(); else offer(); }
 render();
