@@ -131,7 +131,15 @@ function setupScratch() {
     ctx.font = `600 ${Math.round(h * 0.075)}px "DM Sans", Arial, sans-serif`; ctx.fillText('e descubra seu desconto', w / 2, h * 0.6);
   };
   const point = (e) => { const r = canvas.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
-  const scratch = (p) => { ctx.globalCompositeOperation = 'destination-out'; ctx.beginPath(); ctx.arc(p.x, p.y, Math.max(18, inner.clientWidth * 0.07), 0, Math.PI * 2); ctx.fill(); };
+  // Apaga o caminho inteiro do dedo (linha do ponto anterior ao atual), para raspadas rápidas não deixarem buracos.
+  let last = null;
+  const scratch = (p) => {
+    const radius = Math.max(18, inner.clientWidth * 0.07);
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath(); ctx.arc(p.x, p.y, radius, 0, Math.PI * 2); ctx.fill();
+    if (last) { ctx.lineWidth = radius * 2; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke(); }
+    last = p;
+  };
   const cleared = () => { const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data; let clear = 0; let total = 0; for (let i = 3; i < data.length; i += 96) { total += 1; if (data[i] === 0) clear += 1; } return clear / total; };
   const reveal = () => {
     if (done) return; done = true; state.scratched = true;
@@ -140,9 +148,9 @@ function setupScratch() {
     if (!window.matchMedia || !window.matchMedia('(prefers-reduced-motion: reduce)').matches) confetti(inner);
     setTimeout(() => { try { result.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }, 500);
   };
-  canvas.addEventListener('pointerdown', (e) => { if (done) return; drawing = true; hint.hidden = true; try { canvas.setPointerCapture(e.pointerId); } catch (err) {} scratch(point(e)); });
+  canvas.addEventListener('pointerdown', (e) => { if (done) return; drawing = true; last = null; hint.hidden = true; try { canvas.setPointerCapture(e.pointerId); } catch (err) {} scratch(point(e)); });
   canvas.addEventListener('pointermove', (e) => { if (!drawing || done) return; scratch(point(e)); moves += 1; if (moves % 6 === 0 && cleared() > 0.45) reveal(); });
-  const stop = () => { drawing = false; if (!done && cleared() > 0.45) reveal(); };
+  const stop = () => { drawing = false; last = null; if (!done && cleared() > 0.45) reveal(); };
   canvas.addEventListener('pointerup', stop); canvas.addEventListener('pointercancel', stop);
   revealBtn.onclick = reveal;
   paint();
