@@ -71,3 +71,16 @@ button { border: 0; cursor: pointer; }
 .discount-applied { display: inline-block; margin: 0 auto 10px; background: #e8fff1; color: var(--green-dark); border: 1px solid #b9efcf; font-size: 12px; font-weight: 800; padding: 6px 12px; border-radius: 999px; }
 .scratch-reveal:focus-visible, .scratch-cta:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { .scratch-eyebrow, .scratch-hint { animation: none; } }
+
+/* Prova social dentro da oferta + observacao de resultados */
+.offer-proof { margin-top: 18px; display: flex; flex-direction: column; gap: 10px; }
+.offer-proof h2 { margin: 0 0 2px; text-align: center; font-size: 19px; line-height: 1.2; color: var(--ink); text-wrap: balance; }
+.offer-proof h2 span { color: var(--orange); }
+.offer-proof-card { display: grid; grid-template-columns: 96px 1fr; gap: 11px; align-items: center; padding: 9px; border: 1px solid var(--line); border-radius: 13px; background: #fff; box-shadow: 0 6px 16px rgba(60,36,17,.06); }
+.offer-proof-card img { width: 96px; height: 96px; object-fit: cover; border-radius: 9px; display: block; }
+.offer-proof-card div { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.offer-proof-card strong { color: var(--green-dark); font-size: 20px; line-height: 1; }
+.offer-proof-card p { margin: 0; color: #5e4a3f; font-size: 12px; line-height: 1.35; }
+.offer-proof-card small { color: var(--muted); font-size: 10px; }
+.offer-proof-note, .result-note { display: block; text-align: center; color: var(--muted); font-size: 9px; margin: 0; }
+.faq-list p { margin: 8px 0 2px; }
