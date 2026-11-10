@@ -45,7 +45,7 @@ export const FLOW = [
   multi('barriers', 'O que mais te impede de emagrecer hoje?', [
     ['dinheiro', '💸', 'Já gastei dinheiro e não tive resultado'], ['metodo-caro', '💰', 'Não tenho condições de pagar métodos caros'], ['constancia', '📉', 'Começo e não consigo manter'], ['fome', '🍫', 'Sinto fome e acabo cedendo'], ['tempo', '⏰', 'Não tenho tempo para dietas']
   ], { hint: 'Selecione todas que se aplicam' }),
-  info('comparison', '💉 Uma alternativa natural por R$ 5', 'Os métodos caros podem custar <strong>R$ 1.000 por mês</strong> e exigem uso contínuo.<br><br>O Segredo da Insulina é uma alternativa natural por menos de <strong>R$5 no mercado.</strong><br><br><span>Sem ingrediente caro. Sem farmácia. Só o liquidificador.</span>', { button: 'Continuar' }),
+  info('comparison', 'O “efeito caneta” sem caneta: a mistura de R$5 que está secando a barriga das mulheres de 40+', 'As canetas emagrecedoras podem custar <strong>R$ 1.000 por mês</strong> e param de agir quando você para de usar.<br><br>Por isso, milhares de mulheres estão trocando por uma mistura natural de <strong>menos de R$5 no mercado</strong>, e há alunas que eliminaram <strong>até 5kg nos primeiros 7 dias</strong>.*<br><br><span>Sem ingrediente caro. Sem farmácia. Só o liquidificador.</span><br><br><small class="result-note">*Resultados individuais. Podem variar de pessoa para pessoa.</small>', { button: 'Quero esse efeito natural' }),
   multi('goals', 'O que você quer conquistar?', [
     ['saude', '❤️', 'Melhorar minha saúde'], ['peso', '⚖️', 'Perder peso de verdade'], ['desinchar', '💧', 'Desinchar logo na primeira semana'], ['energia', '⚡', 'Ter mais energia no dia a dia'], ['autoestima', '🌸', 'Me sentir bem comigo mesma']
   ], { hint: 'Selecione todas que se aplicam' }),
