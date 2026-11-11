@@ -84,3 +84,8 @@ button { border: 0; cursor: pointer; }
 .offer-proof-card small { color: var(--muted); font-size: 10px; }
 .offer-proof-note, .result-note { display: block; text-align: center; color: var(--muted); font-size: 9px; margin: 0; }
 .faq-list p { margin: 8px 0 2px; }
+
+/* Links de Politica de Privacidade e Termos de Uso */
+.legal-links { display: flex; justify-content: center; align-items: center; gap: 8px; padding: 14px 0 4px; font-size: 10px; }
+.legal-links a { color: #a08d7f; text-decoration: underline; }
+.legal-links i { color: #d8c6b9; font-style: normal; }
