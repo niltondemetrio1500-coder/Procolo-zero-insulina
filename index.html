@@ -60,9 +60,34 @@
         (document.head || document.documentElement).appendChild(s);
       })();
     </script>
+    <script>
+      // Eventos do funil no GA4 (mesmos nomes de antes: etapa_00 ... etapa_28).
+      // O codigo do quiz chama window.__quizEvent(tipo, pagina) a cada tela; pagina 1 = capa, 28 = oferta.
+      (function () {
+        var NAMES = ['pagina_inicial', 'idade', 'corpo', 'area_do_corpo', 'nao_esta_sozinha', 'materia_globo', 'nome', 'o_que_incomoda', 'ja_tentou_emagrecer', 'corpo_resiste', 'o_que_impede', 'comparacao_metodos', 'objetivos', 'inchaco', 'como_funciona', 'peso_atual', 'altura', 'peso_desejado', 'rotina', 'sono', 'previsao_resultado', 'compromisso', 'primeiro_resultado', 'terminou_quiz', 'resultado_analise', 'depoimentos', 'gerando_plano', 'chegou_na_oferta'];
+        var PRICE = 39.90;
+        var sent = {};
+        function send(name, params) {
+          if (sent[name] || typeof window.gtag !== 'function') return;
+          sent[name] = true;
+          window.gtag('event', name, params || {});
+        }
+        function etapa(n, label) { return ('etapa_' + (n < 10 ? '0' : '') + n + '_' + label).slice(0, 40); }
+        window.__quizEvent = function (type, page) {
+          if (type === 'page_view' && page >= 1 && page <= NAMES.length) {
+            var n = page - 1;
+            send(etapa(n, NAMES[n]), n === 27 ? { currency: 'BRL', value: PRICE } : { step_number: n });
+          } else if (type === 'checkout_click') {
+            send(etapa(28, 'clicou_no_checkout'), { currency: 'BRL', value: PRICE, transport_type: 'beacon' });
+            send('begin_checkout', { currency: 'BRL', value: PRICE, transport_type: 'beacon' });
+          }
+        };
+      })();
+    </script>
+    <link rel="stylesheet" href="/assets/quiz-original.css" />
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
+    <div id="root"></div>
+    <script type="module" src="/assets/quiz-original.js"></script>
   </body>
 </html>
