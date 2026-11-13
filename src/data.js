@@ -35,7 +35,7 @@ export const FLOW = [
   info('notAlone', 'Você não está sozinha.', '<strong>87,4%</strong><br><span>das mulheres acima de 40 anos</span><br><br>relatam acúmulo de gordura na Papada mesmo sem comer muito.', { button: 'Entendi, quero continuar' }),
   info('globo', 'O efeito do Ozempic por R$ 5 ⭐', '', { image: ASSETS.globo, button: 'Continuar' }),
   { type: 'name', id: 'name', title: 'Como posso te chamar?' },
-  single('weightImpact', 'O que mais te incomoda no seu peso hoje?', [
+  single('weightImpact', '{name}, o que mais te incomoda no seu peso hoje?', [
     ['autoestima', '💔', 'Minha autoestima', 'Me olho no espelho e não me reconheço mais'], ['saude', '🩺', 'Minha saúde', 'Sinto que minha saúde está em risco'], ['relacionamentos', '👥', 'Meus relacionamentos', 'Evito sair, tirar foto ou me encontrar com pessoas'], ['rotina', '📅', 'Minha rotina', 'Não tenho energia pra cuidar da família e de mim mesma']
   ], { personalized: true }),
   single('appearance', 'Você já tentou emagrecer antes?', [

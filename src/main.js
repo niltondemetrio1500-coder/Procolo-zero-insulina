@@ -84,7 +84,7 @@ function flowScreen() {
 function bodyAreaScreen(step) {
   const selected = state.selections[step.id] || [];
   const options = step.options.map(([value, emoji, label]) => `<button class="body-area-option ${selected.includes(value) ? 'selected' : ''}" data-value="${value}"><span>${emoji}</span><b>${label}</b></button>`).join('');
-  shell(`<section class="quiz-screen body-area-screen">${topbar()}<div class="body-area-card"><h2>Onde você mais sente que o seu <span class="gradient-text">corpo mudou</span>?</h2><p class="select-hint">Selecione uma ou mais opções</p><div class="body-area-layout"><img class="body-area-image" src="${ASSETS.bodyAreas}" alt="Áreas do corpo"/><div class="body-area-options">${options}</div></div><button class="btn-quiz multi-continue" data-action="continue" ${selected.length ? '' : 'disabled'}>Continuar</button></div></section>`, 'quiz-shell');
+  shell(`<section class="quiz-screen body-area-screen">${topbar()}<div class="body-area-card"><h2>Onde você mais sente que o seu <span class="gradient-text">corpo mudou</span>?</h2><div class="body-area-layout"><img class="body-area-image" src="${ASSETS.bodyAreas}" alt="Áreas do corpo"/><div class="body-area-options">${options}</div></div><button class="btn-quiz multi-continue" data-action="continue" ${selected.length ? '' : 'disabled'}>Continuar</button></div></section>`, 'quiz-shell');
   app.querySelector('[data-action="back"]').onclick = goBack;
   app.querySelectorAll('[data-value]').forEach((button) => button.onclick = () => choose(step, button.dataset.value, button));
   app.querySelector('[data-action="continue"]').onclick = nextStep;
