@@ -32,8 +32,8 @@ export const FLOW = [
   multi('bodyArea', 'Onde você mais sente que o seu corpo mudou?', [
     ['papada', '😊', 'Papada'], ['bracos', '💪', 'Braços'], ['barriga', '🤰', 'Barriga'], ['cintura', '💝', 'Cintura'], ['gluteos', '🍑', 'Glúteos'], ['coxas', '🦵', 'Coxas'], ['todo', '✨', 'Corpo Todo']
   ], { image: ASSETS.bodyAreas, hint: 'Selecione uma ou mais opções' }),
-  info('notAlone', '🤝 Você não está sozinha.', '<strong>87,4%</strong><br><span>das mulheres acima de 40 anos</span><br><br>relatam acúmulo de gordura na Papada mesmo sem comer muito.', { button: 'Entendi, quero continuar' }),
-  info('globo', 'O efeito do método natural por R$ 5 ⭐', '', { image: ASSETS.globo, button: 'Continuar' }),
+  info('notAlone', 'Você não está sozinha.', '<strong>87,4%</strong><br><span>das mulheres acima de 40 anos</span><br><br>relatam acúmulo de gordura na Papada mesmo sem comer muito.', { button: 'Entendi, quero continuar' }),
+  info('globo', 'O efeito do Ozempic por R$ 5 ⭐', '', { image: ASSETS.globo, button: 'Continuar' }),
   { type: 'name', id: 'name', title: 'Como posso te chamar?' },
   single('weightImpact', 'O que mais te incomoda no seu peso hoje?', [
     ['autoestima', '💔', 'Minha autoestima', 'Me olho no espelho e não me reconheço mais'], ['saude', '🩺', 'Minha saúde', 'Sinto que minha saúde está em risco'], ['relacionamentos', '👥', 'Meus relacionamentos', 'Evito sair, tirar foto ou me encontrar com pessoas'], ['rotina', '📅', 'Minha rotina', 'Não tenho energia pra cuidar da família e de mim mesma']
@@ -41,11 +41,11 @@ export const FLOW = [
   single('appearance', 'Você já tentou emagrecer antes?', [
     ['varias-vezes', '😞', 'Sim, várias vezes. Perco e logo ganho de volta'], ['nao-mantem', '😶', 'Sim, mas nunca consigo manter'], ['primeira-vez', '✨', 'Estou tentando pela primeira vez de verdade'], ['tudo', '😩', 'Já tentei de tudo e nada funcionou']
   ]),
-  info('biology', '🧬 {name}, seu corpo aprendeu a resistir.', 'É biologia, não falta de força de vontade.<br><br>O <strong>Segredo da Insulina</strong> muda esse sinal por dentro.', { button: 'Entendi, continuar' }),
+  info('biology', '{name}, seu corpo aprendeu a resistir.', 'É biologia, não falta de força de vontade.<br><br>O <strong>Segredo da Insulina</strong> muda esse sinal por dentro.', { button: 'Entendi, continuar' }),
   multi('barriers', 'O que mais te impede de emagrecer hoje?', [
-    ['dinheiro', '💸', 'Já gastei dinheiro e não tive resultado'], ['metodo-caro', '💰', 'Não tenho condições de pagar métodos caros'], ['constancia', '📉', 'Começo e não consigo manter'], ['fome', '🍫', 'Sinto fome e acabo cedendo'], ['tempo', '⏰', 'Não tenho tempo para dietas']
+    ['dinheiro', '💸', 'Já gastei dinheiro e não tive resultado'], ['financeiro', '💰', 'Não tenho condições de pagar o Ozempic'], ['constancia', '📉', 'Começo e não consigo manter'], ['fome', '🍫', 'Sinto fome e acabo cedendo'], ['tempo', '⏰', 'Não tenho tempo para dietas']
   ], { hint: 'Selecione todas que se aplicam' }),
-  info('comparison', 'A mistura de R$5 que tem efeito Mounjaro e seca até 5kg em 7 dias', 'A caneta <strong>Ozempic custa R$ 1.000 por mês</strong> e para de funcionar quando a gente para de usar.<br><br>Por isso, milhares de mulheres acima de 40 estão <strong>trocando o Ozempic</strong> por uma mistura natural de <strong>menos de R$5 no mercado</strong>.<br><br><span>Sem ingrediente caro. Sem farmácia. Só o liquidificador.</span><br><br><small class="result-note">*Resultados individuais. Podem variar de pessoa para pessoa.</small>', { button: 'Quero esse efeito natural' }),
+  info('comparison', 'A caneta Ozempic custa R$ 1.000 por mês e para de funcionar quando a gente para de usar.', 'O <strong>Segredo da Insulina</strong> faz o mesmo por menos de <strong>R$5 no mercado</strong>.<br><br><span>Sem ingrediente caro. Sem farmácia. Só o liquidificador.</span>', { button: 'Continuar' }),
   multi('goals', 'O que você quer conquistar?', [
     ['saude', '❤️', 'Melhorar minha saúde'], ['peso', '⚖️', 'Perder peso de verdade'], ['desinchar', '💧', 'Desinchar logo na primeira semana'], ['energia', '⚡', 'Ter mais energia no dia a dia'], ['autoestima', '🌸', 'Me sentir bem comigo mesma']
   ], { hint: 'Selecione todas que se aplicam' }),
