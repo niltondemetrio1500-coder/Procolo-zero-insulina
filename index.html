@@ -16,42 +16,15 @@
       gtag('config', 'G-K2EMQ5T4YE');
     </script>
     <script>
-      // Pixel Google da Utmify: o script da Utmify aceita um pixel por pagina,
-      // entao escolhemos a conta do Google Ads assim:
-      // 1) etiqueta "acc" no link (o sufixo dos anuncios da Silva termina com &acc=silva);
-      // 2) senao, o ID da campanha (utm_campaign) na lista SILVA_CAMPAIGNS (anuncios antigos, sem a etiqueta);
-      // 3) senao, a conta Fabricio.
+      // Pixel Google da Utmify (mesmo codigo enviado pela Utmify, em versao legivel).
       (function () {
-        var PIXEL_FABRICIO = '6ae886d0d5539a935c80266b';
-        var PIXEL_SILVA = '6aea0e4533b3ca05157e641d';
-        var SILVA_CAMPAIGNS = ['24438334036', '24432493115', '24429973604'];
-        var CHOICE_KEY = 'utmify_google_pixel_id';
-        var UTMIFY_LEAD_KEY = 'lead-google';
-
-        var params = null;
-        try { params = new URLSearchParams(window.location.search); } catch (e) {}
-        var acc = params ? (params.get('acc') || '').toLowerCase() : '';
-        var campaign = params ? params.get('utm_campaign') : null;
-
-        var pixelId = null;
-        if (acc === 'silva') {
-          pixelId = PIXEL_SILVA;
-        } else if (acc === 'fabricio') {
-          pixelId = PIXEL_FABRICIO;
-        } else if (campaign) {
-          pixelId = SILVA_CAMPAIGNS.indexOf(campaign) !== -1 ? PIXEL_SILVA : PIXEL_FABRICIO;
-        } else {
-          try { pixelId = localStorage.getItem(CHOICE_KEY); } catch (e) {}
-        }
-        if (pixelId !== PIXEL_SILVA && pixelId !== PIXEL_FABRICIO) pixelId = PIXEL_FABRICIO;
-
+        var pixelId = '6aff330ec83c96971f4a0d5a';
         try {
-          localStorage.setItem(CHOICE_KEY, pixelId);
-          // A Utmify guarda o visitante junto com o pixel; se a conta mudou, comeca do zero.
-          var lead = JSON.parse(localStorage.getItem(UTMIFY_LEAD_KEY) || 'null');
-          if (lead && lead.pixelId && lead.pixelId !== pixelId) localStorage.removeItem(UTMIFY_LEAD_KEY);
+          // A Utmify guarda o visitante junto com o pixel; se o pixel mudou, comeca do zero.
+          var lead = JSON.parse(localStorage.getItem('lead-google') || 'null');
+          if (lead && lead.pixelId && lead.pixelId !== pixelId) localStorage.removeItem('lead-google');
+          localStorage.removeItem('utmify_google_pixel_id');
         } catch (e) {}
-
         window.googlePixelId = pixelId;
         var s = document.createElement('script');
         s.src = 'https://cdn.utmify.com.br/scripts/pixel/pixel-google.js';
