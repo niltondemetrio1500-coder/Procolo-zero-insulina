@@ -17,8 +17,23 @@
     </script>
     <script>
       // Pixel Google da Utmify (mesmo codigo enviado pela Utmify, em versao legivel).
+      // A Utmify so aceita um pixel por visita, entao o pixel e escolhido pelo link do anuncio:
+      // link com conta=2 -> pixel da conta nova; sem parametro -> pixel da conta Bruna.
       (function () {
-        var pixelId = '6b043c5429d2ebc66e8f249a'; // conta Bruna (23/11)
+        var PIXELS = {
+          '1': '6b043c5429d2ebc66e8f249a', // conta Bruna (23/11), padrao
+          '2': '6b044b40d11b297462430258'  // conta nova (23/11), anuncios com conta=2
+        };
+        var conta = '1';
+        try {
+          var params = new URLSearchParams(window.location.search);
+          var q = params.get('conta');
+          if (q && PIXELS[q]) { conta = q; localStorage.setItem('utmify_conta', q); }
+          // clique novo em anuncio sem conta=2 volta para a conta Bruna
+          else if (params.get('gclid') || params.get('utm_source')) localStorage.setItem('utmify_conta', '1');
+          else if (PIXELS[localStorage.getItem('utmify_conta')]) conta = localStorage.getItem('utmify_conta');
+        } catch (e) {}
+        var pixelId = PIXELS[conta];
         try {
           // A Utmify guarda o visitante junto com o pixel; se o pixel mudou, comeca do zero.
           var lead = JSON.parse(localStorage.getItem('lead-google') || 'null');
