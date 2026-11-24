@@ -69,7 +69,33 @@
             send(etapa(28, 'clicou_no_checkout'), { currency: 'BRL', value: PRICE, transport_type: 'beacon' });
             send('begin_checkout', { currency: 'BRL', value: PRICE, transport_type: 'beacon' });
           }
+          if (window.__backRedirect) window.__backRedirect(type, page);
         };
+      })();
+    </script>
+    <script>
+      // Back redirect: quem chegou na oferta e aperta "voltar" (na oferta ou saindo do checkout) vai para /desconto/.
+      (function () {
+        var KEY = 'sdi_back_redirect';
+        function target() { return '/desconto/' + window.location.search; }
+        function armed() { try { return sessionStorage.getItem(KEY) === '1'; } catch (e) { return false; } }
+        function arm() {
+          try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
+          if (history.state && history.state.sdiTrap) return;
+          try { history.pushState({ sdiTrap: true }, '', window.location.href); } catch (e) {}
+        }
+        window.__backRedirect = function (type, page) {
+          if ((type === 'page_view' && page >= 28) || type === 'checkout_click') arm();
+        };
+        // Voltou do checkout da Greenn para o site: manda direto para o desconto.
+        window.addEventListener('pageshow', function (ev) {
+          var nav = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {};
+          if (armed() && (ev.persisted || nav.type === 'back_forward')) window.location.replace(target());
+        });
+        // Apertou "voltar" na pagina da oferta.
+        window.addEventListener('popstate', function () {
+          if (armed()) window.location.replace(target());
+        });
       })();
     </script>
     <link rel="preconnect" href="https://payfast.greenn.com.br" />
