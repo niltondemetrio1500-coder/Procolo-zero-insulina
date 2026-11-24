@@ -48,6 +48,9 @@
         (document.head || document.documentElement).appendChild(s);
       })();
     </script>
+    <!-- Script de UTMs da Utmify: leva o clique do anuncio (gclid) junto com as UTMs ate o checkout da Greenn,
+         para a Utmify conseguir marcar a compra no Google Ads. -->
+    <script src="https://cdn.utmify.com.br/scripts/utms/latest.js" data-utmify-prevent-xcod-sck data-utmify-prevent-subids async defer></script>
     <script>
       // Eventos do funil no GA4 (mesmos nomes de antes: etapa_00 ... etapa_28).
       // O codigo do quiz chama window.__quizEvent(tipo, pagina) a cada tela; pagina 1 = capa, 28 = oferta.

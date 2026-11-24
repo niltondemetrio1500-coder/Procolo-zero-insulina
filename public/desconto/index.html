@@ -40,6 +40,7 @@
       (document.head || document.documentElement).appendChild(s);
     })();
   </script>
+  <script src="https://cdn.utmify.com.br/scripts/utms/latest.js" data-utmify-prevent-xcod-sck data-utmify-prevent-subids async defer></script>
   <link rel="preconnect" href="https://payfast.greenn.com.br" />
   <style>
     :root {
@@ -165,8 +166,10 @@
           alert('Prévia: o link do checkout de R$ 24,99 ainda não foi configurado.');
         });
       }
-      cta.addEventListener('click', function () {
-        try { if (typeof window.gtag === 'function') window.gtag('event', 'desconto_clicou_checkout', { currency: 'BRL', value: 24.99 }); } catch (e) {}
+      cta.addEventListener('click', function (e) {
+        try { if (typeof window.gtag === 'function') window.gtag('event', 'desconto_clicou_checkout', { currency: 'BRL', value: 24.99 }); } catch (err) {}
+        // Abre pelo window.open para o Script de UTMs da Utmify acrescentar o clique do anuncio (gclid) ao link.
+        if (CHECKOUT_DESCONTO) { e.preventDefault(); window.open(cta.href, '_self'); }
       });
     })();
   </script>
